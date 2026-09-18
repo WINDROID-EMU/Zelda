@@ -1,0 +1,236 @@
+<resources>
+    <string name="app_name">Zelda3</string>
+
+    <!-- Header & Navigation -->
+    <string name="config_title">⚙️ Settings</string>
+    <string name="btn_restore_defaults">Reset Defaults</string>
+    <string name="btn_save">💾 Save</string>
+    <string name="btn_close">✕ Close</string>
+    <string name="tab_general">🌍 General</string>
+    <string name="tab_graphics">🖥️ Graphics</string>
+    <string name="tab_sound">🔊 Audio</string>
+    <string name="tab_features">🎮 Gameplay</string>
+    <string name="tab_raw_ini">📝 .ini Editor</string>
+
+    <!-- Panel 1: General -->
+    <string name="section_general_title">General Settings [General]</string>
+    <string name="label_aspect_ratio">Widescreen Aspect Ratio (ExtendedAspectRatio):</string>
+    <string name="cb_autosave">Autosave: Save state on exit and reload on startup</string>
+    <string name="cb_disable_frame_delay">Disable frame delay (DisableFrameDelay - for 60Hz displays)</string>
+    <string name="cb_display_perf">Display FPS/performance in title (DisplayPerfInTitle)</string>
+    <string name="label_dialogue_language">Dialogue Language (Language):</string>
+
+    <!-- Panel 2: Graphics -->
+    <string name="section_graphics_title">Video &amp; Graphics Settings [Graphics]</string>
+    <string name="label_output_method">Graphics Output Method (OutputMethod):</string>
+    <string name="label_window_scale">Rendering Window Scale (WindowScale):</string>
+    <string name="cb_new_renderer">NewRenderer: Optimized SNES PPU</string>
+    <string name="cb_enhanced_mode7">EnhancedMode7: High-resolution Overworld Mode 7</string>
+    <string name="cb_no_sprite_limits">NoSpriteLimits: Remove per-scanline sprite limits (no flicker)</string>
+    <string name="cb_linear_filtering">LinearFiltering: Smooth / bilinear filtering</string>
+    <string name="cb_ignore_aspect_ratio">IgnoreAspectRatio: Stretch image to full screen</string>
+    <string name="cb_dim_flashes">DimFlashes: Dim intense flashes and strobe effects</string>
+    <string name="label_link_graphics">Custom Link Sprite (LinkGraphics .zspr):</string>
+    <string name="hint_link_graphics">path/to.zspr</string>
+    <string name="btn_download_sprites">🎨 Select Sprite</string>
+    <string name="section_shaders_title">Image Filters &amp; Sharpness (GLSL Shaders)</string>
+    <string name="cb_enable_shader">Enable Image Filter / Shader</string>
+    <string name="label_shader_preset">Filter Preset:</string>
+    <string name="shader_desc_default">Select a filter to enhance sharpness, colors, or add retro CRT effects.</string>
+    <string name="label_custom_shader">Shader File Path (.glsl):</string>
+    <string name="hint_custom_shader">shaders/sharp_bilinear.glsl</string>
+
+    <!-- Panel 3: Sound -->
+    <string name="section_sound_title">Audio &amp; Sound Settings [Sound]</string>
+    <string name="cb_enable_audio">EnableAudio: Enable Game Audio</string>
+    <string name="label_audio_freq">Audio Frequency (AudioFreq):</string>
+    <string name="label_audio_samples">Audio Buffer Size (AudioSamples):</string>
+    <string name="label_audio_channels">Audio Channels (AudioChannels):</string>
+    <string name="label_enable_msu">MSU-1 Orchestrated Audio (EnableMSU):</string>
+    <string name="cb_resume_msu">ResumeMSU: Resume MSU track position across area transitions</string>
+    <string name="label_msu_volume">MSU Track Volume: %1$d%%</string>
+
+    <!-- Panel 4: Features -->
+    <string name="section_features_title">Gameplay Enhancements &amp; Features [Features]</string>
+    <string name="btn_open_item_editor">🎒 Select / Edit Inventory Items</string>
+    <string name="cb_item_switch_lr">ItemSwitchLR: Quick-switch items using L / R buttons</string>
+    <string name="cb_item_switch_limit">ItemSwitchLRLimit: Limit quick-switch to top 4 inventory items</string>
+    <string name="cb_turn_while_dashing">TurnWhileDashing: Turn directions while dashing (Pegasus Boots)</string>
+    <string name="cb_mirror_darkworld">MirrorToDarkworld: Allow Magic Mirror to return to Dark World</string>
+    <string name="cb_collect_with_sword">CollectItemsWithSword: Collect hearts/items with sword slashes</string>
+    <string name="cb_break_pots">BreakPotsWithSword: Cut through pots with sword (Lv 2 to 4)</string>
+    <string name="cb_disable_low_health_beep">DisableLowHealthBeep: Disable low health warning beeps</string>
+    <string name="cb_skip_intro">SkipIntroOnKeypress: Skip Triforce/intro story by pressing any key</string>
+    <string name="cb_show_max_yellow">ShowMaxItemsInYellow: Highlight max Rupee/Bomb/Arrow counts in yellow</string>
+    <string name="cb_more_active_bombs">MoreActiveBombs: Allow up to 4 simultaneous active bombs (default 2)</string>
+    <string name="cb_carry_more_rupees">CarryMoreRupees: Expand wallet to hold up to 9999 Rupees (default 999)</string>
+    <string name="cb_misc_bug_fixes">MiscBugFixes: Enable bug fixes and graphic glitch fixes from original</string>
+    <string name="cb_game_changing_bug_fixes">GameChangingBugFixes: Advanced gameplay glitch fixes</string>
+    <string name="cb_cancel_bird_travel">CancelBirdTravel: Cancel Flute/Bird flight by pressing X</string>
+    <string name="cb_skip_dialogue_a">SkipDialogueOnHoldA: Fast forward dialogues by holding button A (3s)</string>
+    <string name="cb_max_hearts">MaxHearts: Enable all 20 hearts (Maximum Health)</string>
+
+    <!-- Panel 5: Raw INI -->
+    <string name="section_raw_ini_title">Manual Text Editor for zelda3.ini</string>
+    <string name="btn_reload_raw">Reload File</string>
+
+    <!-- Toasts & Dialogs -->
+    <string name="toast_config_saved">Settings saved and applied in real-time to the game!</string>
+    <string name="toast_config_save_error">Error saving zelda3.ini!</string>
+    <string name="toast_file_reloaded">File reloaded.</string>
+    <string name="dialog_restore_title">Reset Defaults</string>
+    <string name="dialog_restore_message">Do you want to reset all zelda3.ini settings to factory defaults?</string>
+    <string name="dialog_restore_positive">Yes, Reset</string>
+    <string name="dialog_restore_negative">Cancel</string>
+    <string name="toast_restore_success">Settings restored and applied in real-time!</string>
+    <string name="toast_restore_error">Error resetting settings.</string>
+
+    <!-- Dialogue Language options -->
+    <string name="lang_dialogue_pt">Português do Brasil (pt)</string>
+    <string name="lang_dialogue_us">English / Original (us)</string>
+
+    <!-- Shader Presets -->
+    <string name="shader_preset_none">None (Original Pixel Art)</string>
+    <string name="shader_desc_none">Classic native pixel art rendering without additional post-processing.</string>
+    <string name="shader_preset_sharp_bilinear">Sharp Bilinear (Pixel-Perfect / Anti-Shimmering)</string>
+    <string name="shader_desc_sharp_bilinear">Maximum pixel sharpness without distortion or shimmering artifacts when scrolling.</string>
+    <string name="shader_preset_sharp_scanlines">Sharp Bilinear + Scanlines (Crisp with Scanlines)</string>
+    <string name="shader_desc_sharp_scanlines">Sharp pixels combined with subtle retro TV scanlines.</string>
+    <string name="shader_preset_adv_sharpening">Advanced Sharpening (High Sharpness / CAS)</string>
+    <string name="shader_desc_adv_sharpening">Adaptive high-sharpness filter enhancing sprite edges, textures, and details.</string>
+    <string name="shader_preset_scale2x">Scale2x / AdvMame (Smoothed Pixel Art)</string>
+    <string name="shader_desc_scale2x">Smart algorithm that smooths pixel staircasing while preserving contours.</string>
+    <string name="shader_preset_hq2x">HQ2x (High Quality Smooth)</string>
+    <string name="shader_desc_hq2x">Advanced 2x interpolation and smoothing filter for high-fidelity pixel art.</string>
+    <string name="shader_preset_crt_easymode">CRT-Easymode (Classic Tube TV / Scanlines)</string>
+    <string name="shader_desc_crt_easymode">Authentic CRT retro monitor simulation with scanlines, phosphor mask, and bloom.</string>
+    <string name="shader_preset_bicubic">Bicubic Sharpen (Crisp Bicubic Filter)</string>
+    <string name="shader_desc_bicubic">Smooth bicubic interpolation with sharpness enhancement for modern displays.</string>
+    <string name="shader_preset_lcd_grid">LCD Grid (Handheld LCD Grid)</string>
+    <string name="shader_desc_lcd_grid">Simulates the pixel grid of classic handheld LCD screens with uniform clarity.</string>
+    <string name="shader_preset_vibrant">Vibrant Enhancer (Vivid Colors &amp; Contrast)</string>
+    <string name="shader_desc_vibrant">Boosts color contrast, saturation, and vibrancy on OLED and IPS displays.</string>
+    <string name="shader_preset_custom">Custom (Custom .glsl file)</string>
+    <string name="shader_desc_custom">Load a custom shader file from internal or external storage.</string>
+
+    <!-- Inventory Editor Dialog -->
+    <string name="inventory_title">🎒 Item &amp; Inventory Editor</string>
+    <string name="inventory_subtitle">Select items and upgrade levels to equip Link</string>
+    <string name="btn_preset_max">⭐ Max Everything</string>
+    <string name="btn_preset_clean">🧹 Clear Items</string>
+    <string name="section_equipment">⚔️ Main Equipment (Weapons, Shields &amp; Armor)</string>
+    <string name="label_sword">🗡️ Sword (Sword)</string>
+    <string name="label_shield">🛡️ Shield (Shield)</string>
+    <string name="label_armor">🥋 Armor / Tunic (Mail)</string>
+    <string name="label_gloves">🥊 Power Gloves (Gloves)</string>
+    <string name="section_tools">🏹 Secondary Weapons &amp; Tools</string>
+    <string name="label_bow">🏹 Bow &amp; Arrows (Bow)</string>
+    <string name="label_arrows">🎯 Arrows Count</string>
+    <string name="label_boomerang">🪃 Boomerang (Boomerang)</string>
+    <string name="label_mushroom">🍄 Mushroom &amp; Powder</string>
+    <string name="label_flute">🎵 Flute &amp; Shovel (Flute / Shovel)</string>
+    <string name="label_bombs">💣 Bombs (Quantity)</string>
+    <string name="cb_hookshot">🪝 Hookshot</string>
+    <string name="cb_torch">🏮 Lantern</string>
+    <string name="cb_hammer">🔨 Magic Hammer</string>
+    <string name="cb_bug_net">🕸️ Bug Catching Net</string>
+    <string name="cb_book_of_mudora">📖 Book of Mudora</string>
+    <string name="cb_boots">👢 Pegasus Boots</string>
+    <string name="cb_flippers">🏊 Zora\'s Flippers</string>
+    <string name="cb_moon_pearl">🔮 Moon Pearl</string>
+    <string name="section_magic">✨ Magic Items, Canes &amp; Medallions</string>
+    <string name="cb_fire_rod">🔥 Fire Rod</string>
+    <string name="cb_ice_rod">❄️ Ice Rod</string>
+    <string name="cb_bombos">💥 Bombos Medallion</string>
+    <string name="cb_ether">⚡ Ether Medallion</string>
+    <string name="cb_quake">🌋 Quake Medallion</string>
+    <string name="cb_cane_somaria">🦯 Cane of Somaria</string>
+    <string name="cb_cane_byrna">🪄 Cane of Byrna</string>
+    <string name="cb_cape">🧙 Magic Cape</string>
+    <string name="cb_mirror">🪞 Magic Mirror</string>
+    <string name="label_magic_consumption">⚡ Magic Consumption:</string>
+    <string name="section_bottles_health">🫙 Magic Bottles (Slots 1 to 4)</string>
+    <string name="label_bottle_1">🫙 Bottle 1</string>
+    <string name="label_bottle_2">🫙 Bottle 2</string>
+    <string name="label_bottle_3">🫙 Bottle 3</string>
+    <string name="label_bottle_4">🫙 Bottle 4</string>
+    <string name="section_health_pendants">❤️ Health, Pendants &amp; Crystals</string>
+    <string name="label_max_health">❤️ Heart Capacity:</string>
+    <string name="label_pendants">🎖️ Hyrule Pendants:</string>
+    <string name="cb_pendant_courage">🟢 Courage</string>
+    <string name="cb_pendant_power">🔴 Power</string>
+    <string name="cb_pendant_wisdom">🔵 Wisdom</string>
+    <string name="label_crystals">💎 7 Dark World Crystals:</string>
+    <string name="cb_crystal_1">💎 Crystal 1</string>
+    <string name="cb_crystal_2">💎 Crystal 2</string>
+    <string name="cb_crystal_3">💎 Crystal 3</string>
+    <string name="cb_crystal_4">💎 Crystal 4</string>
+    <string name="cb_crystal_5">💎 Crystal 5</string>
+    <string name="cb_crystal_6">💎 Crystal 6</string>
+    <string name="cb_crystal_7">💎 Crystal 7</string>
+    <string name="btn_cancel_items">✕ Cancel</string>
+    <string name="btn_save_apply_items">💾 Save &amp; Apply to Game</string>
+    <string name="toast_preset_max">\'Max Everything\' preset selected!</string>
+    <string name="toast_preset_clean">Inventory cleared.</string>
+    <string name="toast_inventory_saved">Inventory updated and applied successfully in game!</string>
+
+    <!-- Sprite Downloader -->
+    <string name="sprite_title">Select Link Sprite</string>
+    <string name="sprite_loading">Loading sprites...</string>
+    <string name="sprite_close">Close</string>
+    <string name="sprite_select">Select</string>
+    <string name="sprite_dialog_title">Select Sprite</string>
+    <string name="sprite_dialog_message">Do you want to select \"%1$s\" as Link\'s sprite?</string>
+    <string name="sprite_yes">Yes</string>
+    <string name="sprite_no">No</string>
+    <string name="sprite_toast_selected">Sprite \"%1$s\" selected successfully!</string>
+    <string name="sprite_toast_configured">Sprite configured: %1$s</string>
+    <string name="sprite_toast_error">Error configuring sprite: %1$s</string>
+    <string name="sprite_toast_none_found">No sprites found in assets.</string>
+    <string name="sprite_storage_unavailable">External storage unavailable.</string>
+
+    <!-- Save & Load States -->
+    <string name="tab_saves">💾 Save States</string>
+    <string name="section_saves_title">Save States &amp; Checkpoints [Save/Load]</string>
+    <string name="section_quick_slots_title">Instant Save Slots (Save States)</string>
+    <string name="quick_slots_desc">Save and restore your exact game progress instantly at any moment in any slot.</string>
+    <string name="label_slot_name">Slot %1$d</string>
+    <string name="slot_status_empty">Empty • No save state</string>
+    <string name="slot_status_saved">Saved on: %1$s • %2$s</string>
+    <string name="btn_slot_save">💾 Save</string>
+    <string name="btn_slot_load">📂 Load</string>
+    <string name="btn_slot_delete">🗑️</string>
+    <string name="dialog_delete_save_title">Delete Save State</string>
+    <string name="dialog_delete_save_message">Do you want to delete the Save State in Slot %1$d?</string>
+    <string name="dialog_delete_positive">Yes, Delete</string>
+    <string name="dialog_delete_negative">Cancel</string>
+    <string name="section_ref_saves_title">Story Chapters &amp; Checkpoints</string>
+    <string name="ref_saves_desc">Jump directly to the start of any story chapter with pre-configured gear and world progression.</string>
+    <string name="label_select_chapter">Select Story Chapter:</string>
+    <string name="btn_load_chapter">📂 Load Selected Chapter</string>
+    <string name="dialog_load_chapter_title">Load Chapter</string>
+    <string name="dialog_load_chapter_message">Do you want to load \"%1$s\"? Any unsaved progress will be replaced.</string>
+    <string name="dialog_load_chapter_positive">Yes, Load</string>
+    <string name="toast_state_saved">State saved to Slot %1$d successfully!</string>
+    <string name="toast_state_save_error">Error saving state to Slot %1$d!</string>
+    <string name="toast_state_loaded">State from Slot %1$d loaded successfully!</string>
+    <string name="toast_state_load_error">Error loading state from Slot %1$d!</string>
+    <string name="toast_state_deleted">Save State in Slot %1$d deleted.</string>
+    <string name="toast_chapter_loaded">\"%1$s\" loaded successfully!</string>
+    <string name="toast_chapter_load_error">Error loading chapter checkpoint!</string>
+
+    <!-- Chapter Names -->
+    <string name="chapter_1">Chapter 1 - Zelda\'s Rescue</string>
+    <string name="chapter_2">Chapter 2 - After Eastern Palace</string>
+    <string name="chapter_3">Chapter 3 - After Desert Palace</string>
+    <string name="chapter_4">Chapter 4 - After Tower of Hera</string>
+    <string name="chapter_5">Chapter 5 - After Hyrule Castle Tower</string>
+    <string name="chapter_6">Chapter 6 - After Dark Palace</string>
+    <string name="chapter_7">Chapter 7 - After Swamp Palace</string>
+    <string name="chapter_8">Chapter 8 - After Skull Woods</string>
+    <string name="chapter_9">Chapter 9 - After Gargoyle\'s Domain</string>
+    <string name="chapter_10">Chapter 10 - After Ice Palace</string>
+    <string name="chapter_11">Chapter 11 - After Misery Mire</string>
+    <string name="chapter_12">Chapter 12 - After Turtle Rock</string>
+    <string name="chapter_13">Chapter 13 - After Ganon\'s Tower</string>
+</resources>

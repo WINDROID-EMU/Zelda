@@ -1,0 +1,838 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#13161C"
+    android:padding="12dp">
+
+    <!-- Header -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/tv_dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:text="@string/inventory_title"
+            android:textColor="#FFD700"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_dialog_title"
+            android:text="@string/inventory_subtitle"
+            android:textColor="#B0C2DE"
+            android:textSize="11sp" />
+
+        <!-- Quick Presets -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_preset_max"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:background="@drawable/btn_gold"
+                android:text="@string/btn_preset_max"
+                android:textColor="#000000"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:layout_marginRight="6dp" />
+
+            <Button
+                android:id="@+id/btn_preset_clean"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:background="@drawable/btn_dark"
+                android:text="@string/btn_preset_clean"
+                android:textColor="#FFFFFF"
+                android:textSize="10sp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!-- Scrollable content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Card 1: Equipamentos de Combate -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_bg"
+                android:padding="10dp"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/section_equipment"
+                    android:textColor="#FFD700"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="6dp" />
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="2"
+                    android:rowCount="2">
+
+                    <!-- Espada -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical"
+                        android:layout_marginRight="6dp"
+                        android:layout_marginBottom="6dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_sword"
+                            android:textColor="#B0C2DE"
+                            android:textSize="11sp" />
+                        <Spinner
+                            android:id="@+id/sp_item_sword"
+                            android:layout_width="match_parent"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+
+                    <!-- Escudo -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginBottom="6dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_shield"
+                            android:textColor="#B0C2DE"
+                            android:textSize="11sp" />
+                        <Spinner
+                            android:id="@+id/sp_item_shield"
+                            android:layout_width="match_parent"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+
+                    <!-- Armadura / Túnica -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical"
+                        android:layout_marginRight="6dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_armor"
+                            android:textColor="#B0C2DE"
+                            android:textSize="11sp" />
+                        <Spinner
+                            android:id="@+id/sp_item_armor"
+                            android:layout_width="match_parent"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+
+                    <!-- Luvas de Força -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="6dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_gloves"
+                            android:textColor="#B0C2DE"
+                            android:textSize="11sp" />
+                        <Spinner
+                            android:id="@+id/sp_item_gloves"
+                            android:layout_width="match_parent"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+                </GridLayout>
+            </LinearLayout>
+
+            <!-- Card 2: Ferramentas & Armas Secundárias -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_bg"
+                android:padding="10dp"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/section_tools"
+                    android:textColor="#FFD700"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="6dp" />
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="2"
+                    android:rowCount="3">
+
+                    <!-- Arco -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical"
+                        android:layout_marginRight="6dp"
+                        android:layout_marginBottom="6dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_bow"
+                            android:textColor="#B0C2DE"
+                            android:textSize="11sp" />
+                        <Spinner
+                            android:id="@+id/sp_item_bow"
+                            android:layout_width="match_parent"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+
+                    <!-- Quantidade de Flechas -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginBottom="6dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_arrows"
+                            android:textColor="#B0C2DE"
+                            android:textSize="11sp" />
+                        <Spinner
+                            android:id="@+id/sp_item_arrows"
+                            android:layout_width="match_parent"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+
+                    <!-- Bumerangue -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical"
+                        android:layout_marginRight="6dp"
+                        android:layout_marginBottom="6dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_boomerang"
+                            android:textColor="#B0C2DE"
+                            android:textSize="11sp" />
+                        <Spinner
+                            android:id="@+id/sp_item_boomerang"
+                            android:layout_width="match_parent"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+
+                    <!-- Cogumelo / Pó Mágico -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginBottom="6dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_mushroom"
+                            android:textColor="#B0C2DE"
+                            android:textSize="11sp" />
+                        <Spinner
+                            android:id="@+id/sp_item_mushroom"
+                            android:layout_width="match_parent"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+
+                    <!-- Flauta / Pá -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical"
+                        android:layout_marginRight="6dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_flute"
+                            android:textColor="#B0C2DE"
+                            android:textSize="11sp" />
+                        <Spinner
+                            android:id="@+id/sp_item_flute"
+                            android:layout_width="match_parent"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+
+                    <!-- Bombas (Qtd) -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="6dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_bombs"
+                            android:textColor="#B0C2DE"
+                            android:textSize="11sp" />
+                        <Spinner
+                            android:id="@+id/sp_item_bombs"
+                            android:layout_width="match_parent"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+                </GridLayout>
+
+                <!-- Checkboxes de ferramentas -->
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="3"
+                    android:layout_marginTop="8dp">
+
+                    <CheckBox
+                        android:id="@+id/cb_item_hookshot"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_hookshot"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_item_torch"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_torch"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_item_hammer"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_hammer"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_item_bug_net"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_bug_net"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_item_book_of_mudora"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_book_of_mudora"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_item_boots"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_boots"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_item_flippers"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_flippers"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_item_moon_pearl"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_moon_pearl"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+                </GridLayout>
+            </LinearLayout>
+
+            <!-- Card 3: Itens Mágicos, Medalhões & Cajados -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_bg"
+                android:padding="10dp"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/section_magic"
+                    android:textColor="#FFD700"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="6dp" />
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="3">
+
+                    <CheckBox
+                        android:id="@+id/cb_item_fire_rod"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_fire_rod"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_item_ice_rod"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_ice_rod"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_item_bombos"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_bombos"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_item_ether"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_ether"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_item_quake"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_quake"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_cane_somaria"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_cane_somaria"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_cane_byrna"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_cane_byrna"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_cape"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_cape"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_mirror"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_mirror"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+                </GridLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="6dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_magic_consumption"
+                        android:textColor="#B0C2DE"
+                        android:textSize="11sp"
+                        android:layout_marginRight="8dp" />
+
+                    <Spinner
+                        android:id="@+id/sp_item_magic_consumption"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edit_text_bg" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Card 4: Garrafas Mágicas -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_bg"
+                android:padding="10dp"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/section_bottles_health"
+                    android:textColor="#FFD700"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="6dp" />
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="2"
+                    android:rowCount="2">
+
+                    <!-- Garrafa 1 -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical"
+                        android:layout_marginRight="6dp"
+                        android:layout_marginBottom="6dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_bottle_1"
+                            android:textColor="#B0C2DE"
+                            android:textSize="11sp" />
+                        <Spinner
+                            android:id="@+id/sp_item_bottle_1"
+                            android:layout_width="match_parent"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+
+                    <!-- Garrafa 2 -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginBottom="6dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_bottle_2"
+                            android:textColor="#B0C2DE"
+                            android:textSize="11sp" />
+                        <Spinner
+                            android:id="@+id/sp_item_bottle_2"
+                            android:layout_width="match_parent"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+
+                    <!-- Garrafa 3 -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical"
+                        android:layout_marginRight="6dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_bottle_3"
+                            android:textColor="#B0C2DE"
+                            android:textSize="11sp" />
+                        <Spinner
+                            android:id="@+id/sp_item_bottle_3"
+                            android:layout_width="match_parent"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+
+                    <!-- Garrafa 4 -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="6dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_bottle_4"
+                            android:textColor="#B0C2DE"
+                            android:textSize="11sp" />
+                        <Spinner
+                            android:id="@+id/sp_item_bottle_4"
+                            android:layout_width="match_parent"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+                </GridLayout>
+            </LinearLayout>
+
+            <!-- Card 5: Vida, Pingentes & Cristais -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/card_bg"
+                android:padding="10dp"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/section_health_pendants"
+                    android:textColor="#FFD700"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="6dp" />
+
+                <!-- Corações -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="6dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_max_health"
+                        android:textColor="#B0C2DE"
+                        android:textSize="11sp"
+                        android:layout_marginRight="8dp" />
+
+                    <Spinner
+                        android:id="@+id/sp_item_hearts"
+                        android:layout_width="0dp"
+                        android:layout_height="36dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/edit_text_bg" />
+                </LinearLayout>
+
+                <!-- Pingentes -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_pendants"
+                    android:textColor="#B0C2DE"
+                    android:textSize="11sp"
+                    android:layout_marginTop="4dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <CheckBox
+                        android:id="@+id/cb_pendant_courage"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/cb_pendant_courage"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+                    <CheckBox
+                        android:id="@+id/cb_pendant_wisdom"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/cb_pendant_wisdom"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+                    <CheckBox
+                        android:id="@+id/cb_pendant_power"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/cb_pendant_power"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <!-- Cristais -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_crystals"
+                    android:textColor="#B0C2DE"
+                    android:textSize="11sp"
+                    android:layout_marginTop="4dp" />
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="4">
+                    <CheckBox
+                        android:id="@+id/cb_crystal_1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_crystal_1"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+                    <CheckBox
+                        android:id="@+id/cb_crystal_2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_crystal_2"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+                    <CheckBox
+                        android:id="@+id/cb_crystal_3"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_crystal_3"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+                    <CheckBox
+                        android:id="@+id/cb_crystal_4"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_crystal_4"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+                    <CheckBox
+                        android:id="@+id/cb_crystal_5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_crystal_5"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+                    <CheckBox
+                        android:id="@+id/cb_crystal_6"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_crystal_6"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+                    <CheckBox
+                        android:id="@+id/cb_crystal_7"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:text="@string/cb_crystal_7"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp" />
+                </GridLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Bottom Actions -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <Button
+            android:id="@+id/btn_cancel_items"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_dark"
+            android:text="@string/btn_cancel_items"
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            android:layout_marginRight="6dp" />
+
+        <Button
+            android:id="@+id/btn_save_apply_items"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_weight="2"
+            android:background="@drawable/btn_gold"
+            android:text="@string/btn_save_apply_items"
+            android:textColor="#000000"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_marginLeft="6dp" />
+    </LinearLayout>
+</LinearLayout>

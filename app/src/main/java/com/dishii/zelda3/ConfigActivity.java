@@ -1,0 +1,1444 @@
+package com.dishii.zelda3;
+
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Environment;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.SeekBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+public class ConfigActivity extends Activity {
+
+    private ZeldaConfigHelper configHelper;
+
+    // Tabs & Panels
+    private Button tabGeneral, tabGraphics, tabSound, tabFeatures, tabSaves, tabRawIni;
+    private View panelGeneral, panelGraphics, panelSound, panelFeatures, panelSaves, panelRawIni;
+    private Button currentTabButton;
+    private View currentPanel;
+
+    // Header buttons
+    private Button btnSave, btnClose, btnRestoreDefaults, btnReloadRaw;
+
+    // Features & Item Editor
+    private Button btnOpenItemEditor, btnDownloadSprites;
+
+    // General controls
+    private Spinner spAspectRatio, spLanguage;
+    private CheckBox cbAutosave, cbDisableFrameDelay, cbDisplayPerf;
+
+    // Graphics controls
+    private Spinner spOutputMethod, spWindowScale, spShaderPreset;
+    private CheckBox cbNewRenderer, cbEnhancedMode7, cbNoSpriteLimits, cbLinearFiltering, cbIgnoreAspectRatio, cbDimFlashes, cbEnableShader;
+    private TextView tvShaderDesc;
+    private View layoutCustomShader;
+    private EditText etLinkGraphics, etShader;
+    private boolean isUpdatingShaderUi = false;
+
+    // Sound controls
+    private CheckBox cbEnableAudio, cbResumeMsu;
+    private Spinner spAudioFreq, spAudioSamples, spAudioChannels, spEnableMsu;
+    private SeekBar sbMsuVolume;
+    private TextView tvMsuVolumeLabel;
+
+    // Features controls
+    private CheckBox cbItemSwitchLr, cbItemSwitchLimit, cbTurnWhileDashing, cbMirrorDarkworld,
+            cbCollectWithSword, cbBreakPots, cbDisableLowHealthBeep, cbSkipIntro,
+            cbShowMaxYellow, cbMoreActiveBombs, cbCarryMoreRupees, cbMiscBugFixes,
+            cbGameChangingBugFixes, cbCancelBirdTravel, cbSkipDialogueA, cbMaxHearts;
+
+    // Save States & Checkpoints
+    private final TextView[] tvSlotInfo = new TextView[5];
+    private final Button[] btnSlotSave = new Button[5];
+    private final Button[] btnSlotLoad = new Button[5];
+    private final Button[] btnSlotDelete = new Button[5];
+    private Spinner spChapters;
+    private Button btnLoadChapter;
+
+    // Raw INI
+    private EditText etRawIni;
+
+    public static class LanguageOption {
+        public final String name;
+        public final String code;
+
+        public LanguageOption(String name, String code) {
+            this.name = name;
+            this.code = code;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
+    public static class ShaderPreset {
+        public final String name;
+        public final String path;
+        public final String description;
+
+        public ShaderPreset(String name, String path, String description) {
+            this.name = name;
+            this.path = path;
+            this.description = description;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
+    private List<LanguageOption> getLanguageOptions() {
+        return Arrays.asList(
+                new LanguageOption(getString(R.string.lang_dialogue_pt), "pt"),
+                new LanguageOption(getString(R.string.lang_dialogue_us), "us")
+        );
+    }
+
+    private List<ShaderPreset> getShaderPresets() {
+        return Arrays.asList(
+                new ShaderPreset(getString(R.string.shader_preset_none), "", getString(R.string.shader_desc_none)),
+                new ShaderPreset(getString(R.string.shader_preset_sharp_bilinear), "shaders/sharp_bilinear.glsl", getString(R.string.shader_desc_sharp_bilinear)),
+                new ShaderPreset(getString(R.string.shader_preset_sharp_scanlines), "shaders/sharp_bilinear_scanlines.glsl", getString(R.string.shader_desc_sharp_scanlines)),
+                new ShaderPreset(getString(R.string.shader_preset_adv_sharpening), "shaders/advanced_sharpening.glsl", getString(R.string.shader_desc_adv_sharpening)),
+                new ShaderPreset(getString(R.string.shader_preset_scale2x), "shaders/scale2x.glsl", getString(R.string.shader_desc_scale2x)),
+                new ShaderPreset(getString(R.string.shader_preset_hq2x), "shaders/hq2x.glsl", getString(R.string.shader_desc_hq2x)),
+                new ShaderPreset(getString(R.string.shader_preset_crt_easymode), "shaders/crt_easymode.glsl", getString(R.string.shader_desc_crt_easymode)),
+                new ShaderPreset(getString(R.string.shader_preset_bicubic), "shaders/bicubic_sharpen.glsl", getString(R.string.shader_desc_bicubic)),
+                new ShaderPreset(getString(R.string.shader_preset_lcd_grid), "shaders/lcd_grid.glsl", getString(R.string.shader_desc_lcd_grid)),
+                new ShaderPreset(getString(R.string.shader_preset_vibrant), "shaders/vibrant_enhancer.glsl", getString(R.string.shader_desc_vibrant)),
+                new ShaderPreset(getString(R.string.shader_preset_custom), "__custom__", getString(R.string.shader_desc_custom))
+        );
+    }
+
+    private List<LanguageOption> languageOptions;
+    private List<ShaderPreset> shaderPresets;
+
+    private static final List<String> ASPECT_RATIOS = Arrays.asList(
+            "18:9", "16:9", "4:3", "16:10", "19.5:9", "20:9", "21:9",
+            "18:9, extend_y", "16:9, extend_y", "4:3, extend_y"
+    );
+
+    private static final List<String> OUTPUT_METHODS = Arrays.asList("SDL", "OpenGL", "OpenGL ES", "SDL-Software");
+    private static final List<String> WINDOW_SCALES = Arrays.asList("1", "2", "3", "4", "5");
+    private static final List<String> AUDIO_FREQS = Arrays.asList("44100", "48000", "32000", "22050", "11025");
+    private static final List<String> AUDIO_SAMPLES = Arrays.asList("512", "1024", "2048", "4096");
+    private static final List<String> AUDIO_CHANNELS = Arrays.asList("2", "1");
+    private static final List<String> MSU_OPTIONS = Arrays.asList("false", "true", "deluxe", "opuz", "deluxe-opuz");
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        ZeldaConfigHelper helper = new ZeldaConfigHelper(newBase);
+        String lang = helper.getValue("General", "Language", "");
+        super.attachBaseContext(LocaleHelper.applyLocale(newBase, lang));
+    }
+
+    @Override
+    public File getExternalFilesDir(String type) {
+        try {
+            File dir = new File(Environment.getExternalStorageDirectory(), "zelda");
+            if (dir.exists() || dir.mkdirs()) {
+                return dir;
+            }
+        } catch (Exception ignored) {}
+        return super.getExternalFilesDir(type);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        configHelper = new ZeldaConfigHelper(this);
+        String currentLang = configHelper.getValue("General", "Language", "");
+        LocaleHelper.updateResources(this, currentLang);
+
+        super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        setContentView(R.layout.activity_config);
+
+        languageOptions = getLanguageOptions();
+        shaderPresets = getShaderPresets();
+
+        initViews();
+        setupSpinners();
+        loadValuesToUi();
+        setupEvents();
+
+        selectTab(tabGeneral, panelGeneral);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (configHelper != null && etLinkGraphics != null) {
+            configHelper.load();
+            String linkGfx = configHelper.getValue("Graphics", "LinkGraphics", "");
+            if (!etLinkGraphics.isFocused()) {
+                etLinkGraphics.setText(linkGfx);
+            }
+        }
+    }
+
+    private void initViews() {
+        tabGeneral = findViewById(R.id.tab_general);
+        tabGraphics = findViewById(R.id.tab_graphics);
+        tabSound = findViewById(R.id.tab_sound);
+        tabFeatures = findViewById(R.id.tab_features);
+        tabSaves = findViewById(R.id.tab_saves);
+        tabRawIni = findViewById(R.id.tab_raw_ini);
+
+        panelGeneral = findViewById(R.id.panel_general);
+        panelGraphics = findViewById(R.id.panel_graphics);
+        panelSound = findViewById(R.id.panel_sound);
+        panelFeatures = findViewById(R.id.panel_features);
+        panelSaves = findViewById(R.id.panel_saves);
+        panelRawIni = findViewById(R.id.panel_raw_ini);
+
+        btnSave = findViewById(R.id.btn_save);
+        btnClose = findViewById(R.id.btn_close);
+        btnRestoreDefaults = findViewById(R.id.btn_restore_defaults);
+        btnReloadRaw = findViewById(R.id.btn_reload_raw);
+
+        // General
+        spAspectRatio = findViewById(R.id.sp_aspect_ratio);
+        cbAutosave = findViewById(R.id.cb_autosave);
+        cbDisableFrameDelay = findViewById(R.id.cb_disable_frame_delay);
+        cbDisplayPerf = findViewById(R.id.cb_display_perf);
+        spLanguage = findViewById(R.id.sp_language);
+
+        // Graphics
+        spOutputMethod = findViewById(R.id.sp_output_method);
+        spWindowScale = findViewById(R.id.sp_window_scale);
+        cbNewRenderer = findViewById(R.id.cb_new_renderer);
+        cbEnhancedMode7 = findViewById(R.id.cb_enhanced_mode7);
+        cbNoSpriteLimits = findViewById(R.id.cb_no_sprite_limits);
+        cbLinearFiltering = findViewById(R.id.cb_linear_filtering);
+        cbIgnoreAspectRatio = findViewById(R.id.cb_ignore_aspect_ratio);
+        cbDimFlashes = findViewById(R.id.cb_dim_flashes);
+        etLinkGraphics = findViewById(R.id.et_link_graphics);
+        btnDownloadSprites = findViewById(R.id.btn_download_sprites);
+        
+        // Shaders & Filters
+        cbEnableShader = findViewById(R.id.cb_enable_shader);
+        spShaderPreset = findViewById(R.id.sp_shader_preset);
+        tvShaderDesc = findViewById(R.id.tv_shader_desc);
+        layoutCustomShader = findViewById(R.id.layout_custom_shader);
+        etShader = findViewById(R.id.et_shader);
+
+        // Sound
+        cbEnableAudio = findViewById(R.id.cb_enable_audio);
+        cbResumeMsu = findViewById(R.id.cb_resume_msu);
+        spAudioFreq = findViewById(R.id.sp_audio_freq);
+        spAudioSamples = findViewById(R.id.sp_audio_samples);
+        spAudioChannels = findViewById(R.id.sp_audio_channels);
+        spEnableMsu = findViewById(R.id.sp_enable_msu);
+        sbMsuVolume = findViewById(R.id.sb_msu_volume);
+        tvMsuVolumeLabel = findViewById(R.id.tv_msu_volume_label);
+
+        // Features
+        cbItemSwitchLr = findViewById(R.id.cb_item_switch_lr);
+        cbItemSwitchLimit = findViewById(R.id.cb_item_switch_limit);
+        cbTurnWhileDashing = findViewById(R.id.cb_turn_while_dashing);
+        cbMirrorDarkworld = findViewById(R.id.cb_mirror_darkworld);
+        cbCollectWithSword = findViewById(R.id.cb_collect_with_sword);
+        cbBreakPots = findViewById(R.id.cb_break_pots);
+        cbDisableLowHealthBeep = findViewById(R.id.cb_disable_low_health_beep);
+        cbSkipIntro = findViewById(R.id.cb_skip_intro);
+        cbShowMaxYellow = findViewById(R.id.cb_show_max_yellow);
+        cbMoreActiveBombs = findViewById(R.id.cb_more_active_bombs);
+        cbCarryMoreRupees = findViewById(R.id.cb_carry_more_rupees);
+        cbMiscBugFixes = findViewById(R.id.cb_misc_bug_fixes);
+        cbGameChangingBugFixes = findViewById(R.id.cb_game_changing_bug_fixes);
+        cbCancelBirdTravel = findViewById(R.id.cb_cancel_bird_travel);
+        cbSkipDialogueA = findViewById(R.id.cb_skip_dialogue_a);
+        cbMaxHearts = findViewById(R.id.cb_max_hearts);
+        btnOpenItemEditor = findViewById(R.id.btn_open_item_editor);
+
+        // Save States Slots
+        tvSlotInfo[0] = findViewById(R.id.tv_slot_1_info);
+        btnSlotSave[0] = findViewById(R.id.btn_slot_1_save);
+        btnSlotLoad[0] = findViewById(R.id.btn_slot_1_load);
+        btnSlotDelete[0] = findViewById(R.id.btn_slot_1_delete);
+
+        tvSlotInfo[1] = findViewById(R.id.tv_slot_2_info);
+        btnSlotSave[1] = findViewById(R.id.btn_slot_2_save);
+        btnSlotLoad[1] = findViewById(R.id.btn_slot_2_load);
+        btnSlotDelete[1] = findViewById(R.id.btn_slot_2_delete);
+
+        tvSlotInfo[2] = findViewById(R.id.tv_slot_3_info);
+        btnSlotSave[2] = findViewById(R.id.btn_slot_3_save);
+        btnSlotLoad[2] = findViewById(R.id.btn_slot_3_load);
+        btnSlotDelete[2] = findViewById(R.id.btn_slot_3_delete);
+
+        tvSlotInfo[3] = findViewById(R.id.tv_slot_4_info);
+        btnSlotSave[3] = findViewById(R.id.btn_slot_4_save);
+        btnSlotLoad[3] = findViewById(R.id.btn_slot_4_load);
+        btnSlotDelete[3] = findViewById(R.id.btn_slot_4_delete);
+
+        tvSlotInfo[4] = findViewById(R.id.tv_slot_5_info);
+        btnSlotSave[4] = findViewById(R.id.btn_slot_5_save);
+        btnSlotLoad[4] = findViewById(R.id.btn_slot_5_load);
+        btnSlotDelete[4] = findViewById(R.id.btn_slot_5_delete);
+
+        spChapters = findViewById(R.id.sp_chapters);
+        btnLoadChapter = findViewById(R.id.btn_load_chapter);
+
+        // Raw
+        etRawIni = findViewById(R.id.et_raw_ini);
+    }
+
+    private void setupSpinners() {
+        setupSpinnerAdapter(spAspectRatio, ASPECT_RATIOS);
+        setupSpinnerAdapter(spOutputMethod, OUTPUT_METHODS);
+        setupSpinnerAdapter(spWindowScale, WINDOW_SCALES);
+        setupSpinnerAdapter(spAudioFreq, AUDIO_FREQS);
+        setupSpinnerAdapter(spAudioSamples, AUDIO_SAMPLES);
+        setupSpinnerAdapter(spAudioChannels, AUDIO_CHANNELS);
+        setupSpinnerAdapter(spEnableMsu, MSU_OPTIONS);
+
+        List<String> langNames = new ArrayList<>();
+        for (LanguageOption opt : languageOptions) {
+            langNames.add(opt.name);
+        }
+        setupSpinnerAdapter(spLanguage, langNames);
+
+        List<String> presetNames = new ArrayList<>();
+        for (ShaderPreset p : shaderPresets) {
+            presetNames.add(p.name);
+        }
+        setupSpinnerAdapter(spShaderPreset, presetNames);
+
+        List<String> chapterTitles = getChapterTitles();
+        setupSpinnerAdapter(spChapters, chapterTitles);
+    }
+
+    private void setupSpinnerAdapter(Spinner spinner, List<String> items) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.custom_spinner_item, items);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+    }
+
+    private void setSpinnerSelection(Spinner spinner, List<String> list, String value, String defVal) {
+        if (value == null) value = defVal;
+        int idx = -1;
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).equalsIgnoreCase(value.trim())) {
+                idx = i;
+                break;
+            }
+        }
+        if (idx != -1) {
+            spinner.setSelection(idx);
+        } else if (defVal != null) {
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).equalsIgnoreCase(defVal.trim())) {
+                    spinner.setSelection(i);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void loadValuesToUi() {
+        // General
+        String aspect = configHelper.getValue("General", "ExtendedAspectRatio", "18:9");
+        if (aspect != null && aspect.contains("#")) aspect = aspect.substring(0, aspect.indexOf('#')).trim();
+        if (aspect != null && aspect.contains(";")) aspect = aspect.substring(0, aspect.indexOf(';')).trim();
+        setSpinnerSelection(spAspectRatio, ASPECT_RATIOS, aspect, "18:9");
+        cbAutosave.setChecked(configHelper.getBoolValue("General", "Autosave", false));
+        cbDisableFrameDelay.setChecked(configHelper.getBoolValue("General", "DisableFrameDelay", false));
+        cbDisplayPerf.setChecked(configHelper.getBoolValue("General", "DisplayPerfInTitle", false));
+        
+        String lang = configHelper.getValue("General", "Language", "");
+        if (lang != null && lang.contains("#")) lang = lang.substring(0, lang.indexOf('#')).trim();
+        if (lang != null && lang.contains(";")) lang = lang.substring(0, lang.indexOf(';')).trim();
+        String eff = LocaleHelper.getEffectiveLanguage(this, lang);
+        if (eff.equalsIgnoreCase("pt")) {
+            spLanguage.setSelection(0);
+        } else {
+            spLanguage.setSelection(1);
+        }
+
+        // Graphics
+        String outputMethod = configHelper.getValue("Graphics", "OutputMethod", "SDL");
+        if (outputMethod != null && outputMethod.contains("#")) outputMethod = outputMethod.substring(0, outputMethod.indexOf('#')).trim();
+        setSpinnerSelection(spOutputMethod, OUTPUT_METHODS, outputMethod, "SDL");
+
+        String winScale = String.valueOf(configHelper.getIntValue("Graphics", "WindowScale", 3));
+        setSpinnerSelection(spWindowScale, WINDOW_SCALES, winScale, "3");
+
+        cbNewRenderer.setChecked(configHelper.getBoolValue("Graphics", "NewRenderer", true));
+        cbEnhancedMode7.setChecked(configHelper.getBoolValue("Graphics", "EnhancedMode7", true));
+        cbNoSpriteLimits.setChecked(configHelper.getBoolValue("Graphics", "NoSpriteLimits", true));
+        cbLinearFiltering.setChecked(configHelper.getBoolValue("Graphics", "LinearFiltering", false));
+        cbIgnoreAspectRatio.setChecked(configHelper.getBoolValue("Graphics", "IgnoreAspectRatio", false));
+        cbDimFlashes.setChecked(configHelper.getBoolValue("Graphics", "DimFlashes", false));
+
+        etLinkGraphics.setText(configHelper.getValue("Graphics", "LinkGraphics", ""));
+
+        // Shaders & Filters
+        String shader = configHelper.getValue("Graphics", "Shader", "").trim();
+        if (shader.contains("#")) shader = shader.substring(0, shader.indexOf('#')).trim();
+        if (shader.contains(";")) shader = shader.substring(0, shader.indexOf(';')).trim();
+
+        isUpdatingShaderUi = true;
+        if (shader.isEmpty()) {
+            cbEnableShader.setChecked(false);
+            spShaderPreset.setSelection(0);
+            tvShaderDesc.setText(shaderPresets.get(0).description);
+            etShader.setText("");
+            layoutCustomShader.setVisibility(View.GONE);
+        } else {
+            cbEnableShader.setChecked(true);
+            int matchedIdx = -1;
+            for (int i = 1; i < shaderPresets.size() - 1; i++) {
+                ShaderPreset p = shaderPresets.get(i);
+                if (p.path.equalsIgnoreCase(shader) ||
+                        shader.endsWith(p.path) ||
+                        p.path.endsWith(shader)) {
+                    matchedIdx = i;
+                    break;
+                }
+            }
+
+            if (matchedIdx != -1) {
+                spShaderPreset.setSelection(matchedIdx);
+                tvShaderDesc.setText(shaderPresets.get(matchedIdx).description);
+                etShader.setText(shader);
+                layoutCustomShader.setVisibility(View.GONE);
+            } else {
+                int customIdx = shaderPresets.size() - 1;
+                spShaderPreset.setSelection(customIdx);
+                tvShaderDesc.setText(shaderPresets.get(customIdx).description);
+                etShader.setText(shader);
+                layoutCustomShader.setVisibility(View.VISIBLE);
+            }
+        }
+        isUpdatingShaderUi = false;
+
+        // Sound
+        cbEnableAudio.setChecked(configHelper.getBoolValue("Sound", "EnableAudio", true));
+        cbResumeMsu.setChecked(configHelper.getBoolValue("Sound", "ResumeMSU", true));
+
+        String freq = String.valueOf(configHelper.getIntValue("Sound", "AudioFreq", 44100));
+        setSpinnerSelection(spAudioFreq, AUDIO_FREQS, freq, "44100");
+
+        String samples = String.valueOf(configHelper.getIntValue("Sound", "AudioSamples", 512));
+        setSpinnerSelection(spAudioSamples, AUDIO_SAMPLES, samples, "512");
+
+        String channels = String.valueOf(configHelper.getIntValue("Sound", "AudioChannels", 2));
+        setSpinnerSelection(spAudioChannels, AUDIO_CHANNELS, channels, "2");
+
+        String msu = configHelper.getValue("Sound", "EnableMSU", "false");
+        setSpinnerSelection(spEnableMsu, MSU_OPTIONS, msu, "false");
+
+        String msuVolStr = configHelper.getValue("Sound", "MSUVolume", "100%");
+        int vol = 100;
+        try {
+            if (msuVolStr.endsWith("%")) msuVolStr = msuVolStr.substring(0, msuVolStr.length() - 1);
+            vol = Integer.parseInt(msuVolStr.trim());
+        } catch (Exception ignored) {}
+        if (vol < 0) vol = 0;
+        if (vol > 100) vol = 100;
+        sbMsuVolume.setProgress(vol);
+        tvMsuVolumeLabel.setText(getString(R.string.label_msu_volume, vol));
+
+        // Features
+        cbItemSwitchLr.setChecked(configHelper.getBoolValue("Features", "ItemSwitchLR", false));
+        cbItemSwitchLimit.setChecked(configHelper.getBoolValue("Features", "ItemSwitchLRLimit", false));
+        cbTurnWhileDashing.setChecked(configHelper.getBoolValue("Features", "TurnWhileDashing", false));
+        cbMirrorDarkworld.setChecked(configHelper.getBoolValue("Features", "MirrorToDarkworld", false));
+        cbCollectWithSword.setChecked(configHelper.getBoolValue("Features", "CollectItemsWithSword", false));
+        cbBreakPots.setChecked(configHelper.getBoolValue("Features", "BreakPotsWithSword", false));
+        cbDisableLowHealthBeep.setChecked(configHelper.getBoolValue("Features", "DisableLowHealthBeep", false));
+        cbSkipIntro.setChecked(configHelper.getBoolValue("Features", "SkipIntroOnKeypress", false));
+        cbShowMaxYellow.setChecked(configHelper.getBoolValue("Features", "ShowMaxItemsInYellow", false));
+        cbMoreActiveBombs.setChecked(configHelper.getBoolValue("Features", "MoreActiveBombs", false));
+        cbCarryMoreRupees.setChecked(configHelper.getBoolValue("Features", "CarryMoreRupees", false));
+        cbMiscBugFixes.setChecked(configHelper.getBoolValue("Features", "MiscBugFixes", false));
+        cbGameChangingBugFixes.setChecked(configHelper.getBoolValue("Features", "GameChangingBugFixes", false));
+        cbCancelBirdTravel.setChecked(configHelper.getBoolValue("Features", "CancelBirdTravel", false));
+        cbSkipDialogueA.setChecked(configHelper.getBoolValue("Features", "SkipDialogueOnHoldA", true));
+        cbMaxHearts.setChecked(configHelper.getBoolValue("Features", "MaxHearts", false));
+
+        // Save States
+        updateAllSlotsUi();
+
+        // Raw
+        etRawIni.setText(configHelper.getRawText());
+    }
+
+    private void syncUiToConfigHelper() {
+        if (currentPanel == panelRawIni) {
+            configHelper.setRawText(etRawIni.getText().toString());
+            return;
+        }
+
+        // General
+        configHelper.setValue("General", "ExtendedAspectRatio", spAspectRatio.getSelectedItem().toString());
+        configHelper.setBoolValue("General", "Autosave", cbAutosave.isChecked());
+        configHelper.setBoolValue("General", "DisableFrameDelay", cbDisableFrameDelay.isChecked());
+        configHelper.setBoolValue("General", "DisplayPerfInTitle", cbDisplayPerf.isChecked());
+        int selectedLangPos = spLanguage.getSelectedItemPosition();
+        if (selectedLangPos >= 0 && selectedLangPos < languageOptions.size()) {
+            configHelper.setValue("General", "Language", languageOptions.get(selectedLangPos).code);
+        } else {
+            configHelper.setValue("General", "Language", "pt");
+        }
+
+        // Graphics
+        configHelper.setValue("Graphics", "OutputMethod", spOutputMethod.getSelectedItem().toString());
+        configHelper.setValue("Graphics", "WindowScale", spWindowScale.getSelectedItem().toString());
+        configHelper.setBoolValue("Graphics", "NewRenderer", cbNewRenderer.isChecked());
+        configHelper.setBoolValue("Graphics", "EnhancedMode7", cbEnhancedMode7.isChecked());
+        configHelper.setBoolValue("Graphics", "NoSpriteLimits", cbNoSpriteLimits.isChecked());
+        configHelper.setBoolValue("Graphics", "LinearFiltering", cbLinearFiltering.isChecked());
+        configHelper.setBoolValue("Graphics", "IgnoreAspectRatio", cbIgnoreAspectRatio.isChecked());
+        configHelper.setBoolValue("Graphics", "DimFlashes", cbDimFlashes.isChecked());
+
+        String linkGfx = etLinkGraphics.getText().toString().trim();
+        if (!linkGfx.isEmpty()) {
+            configHelper.setValue("Graphics", "LinkGraphics", linkGfx);
+        } else {
+            configHelper.removeKey("Graphics", "LinkGraphics");
+        }
+
+        // Shaders & Filters
+        if (!cbEnableShader.isChecked() || spShaderPreset.getSelectedItemPosition() == 0) {
+            configHelper.removeKey("Graphics", "Shader");
+        } else {
+            String shader = etShader.getText().toString().trim();
+            if (!shader.isEmpty()) {
+                configHelper.setValue("Graphics", "Shader", shader);
+            } else {
+                configHelper.removeKey("Graphics", "Shader");
+            }
+        }
+
+        // Sound
+        configHelper.setBoolValue("Sound", "EnableAudio", cbEnableAudio.isChecked());
+        configHelper.setValue("Sound", "AudioFreq", spAudioFreq.getSelectedItem().toString());
+        configHelper.setValue("Sound", "AudioSamples", spAudioSamples.getSelectedItem().toString());
+        configHelper.setValue("Sound", "AudioChannels", spAudioChannels.getSelectedItem().toString());
+        configHelper.setValue("Sound", "EnableMSU", spEnableMsu.getSelectedItem().toString());
+        configHelper.setBoolValue("Sound", "ResumeMSU", cbResumeMsu.isChecked());
+        configHelper.setValue("Sound", "MSUVolume", sbMsuVolume.getProgress() + "%");
+
+        // Features
+        configHelper.setBoolValue("Features", "ItemSwitchLR", cbItemSwitchLr.isChecked());
+        configHelper.setBoolValue("Features", "ItemSwitchLRLimit", cbItemSwitchLimit.isChecked());
+        configHelper.setBoolValue("Features", "TurnWhileDashing", cbTurnWhileDashing.isChecked());
+        configHelper.setBoolValue("Features", "MirrorToDarkworld", cbMirrorDarkworld.isChecked());
+        configHelper.setBoolValue("Features", "CollectItemsWithSword", cbCollectWithSword.isChecked());
+        configHelper.setBoolValue("Features", "BreakPotsWithSword", cbBreakPots.isChecked());
+        configHelper.setBoolValue("Features", "DisableLowHealthBeep", cbDisableLowHealthBeep.isChecked());
+        configHelper.setBoolValue("Features", "SkipIntroOnKeypress", cbSkipIntro.isChecked());
+        configHelper.setBoolValue("Features", "ShowMaxItemsInYellow", cbShowMaxYellow.isChecked());
+        configHelper.setBoolValue("Features", "MoreActiveBombs", cbMoreActiveBombs.isChecked());
+        configHelper.setBoolValue("Features", "CarryMoreRupees", cbCarryMoreRupees.isChecked());
+        configHelper.setBoolValue("Features", "MiscBugFixes", cbMiscBugFixes.isChecked());
+        configHelper.setBoolValue("Features", "GameChangingBugFixes", cbGameChangingBugFixes.isChecked());
+        configHelper.setBoolValue("Features", "CancelBirdTravel", cbCancelBirdTravel.isChecked());
+        configHelper.setBoolValue("Features", "SkipDialogueOnHoldA", cbSkipDialogueA.isChecked());
+        configHelper.setBoolValue("Features", "MaxHearts", cbMaxHearts.isChecked());
+
+        etRawIni.setText(configHelper.getRawText());
+    }
+
+    private void setupEvents() {
+        tabGeneral.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectTab(tabGeneral, panelGeneral);
+            }
+        });
+
+        tabGraphics.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectTab(tabGraphics, panelGraphics);
+            }
+        });
+
+        tabSound.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectTab(tabSound, panelSound);
+            }
+        });
+
+        tabFeatures.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectTab(tabFeatures, panelFeatures);
+            }
+        });
+
+        tabSaves.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateAllSlotsUi();
+                selectTab(tabSaves, panelSaves);
+            }
+        });
+
+        tabRawIni.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                syncUiToConfigHelper();
+                selectTab(tabRawIni, panelRawIni);
+            }
+        });
+
+        for (int i = 0; i < 5; i++) {
+            final int slot = i;
+            btnSlotSave[slot].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    File externalDir = getExternalFilesDir(null);
+                    if (externalDir != null) {
+                        File savesDir = new File(externalDir, "saves");
+                        if (!savesDir.exists()) savesDir.mkdirs();
+                    }
+                    boolean ok = MainActivity.saveGameState(slot);
+                    if (ok) {
+                        updateSlotUi(slot);
+                        Toast.makeText(ConfigActivity.this, getString(R.string.toast_state_saved, slot + 1), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ConfigActivity.this, getString(R.string.toast_state_save_error, slot + 1), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            btnSlotLoad[slot].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    boolean ok = MainActivity.loadGameState(slot);
+                    if (ok) {
+                        Toast.makeText(ConfigActivity.this, getString(R.string.toast_state_loaded, slot + 1), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(ConfigActivity.this, getString(R.string.toast_state_load_error, slot + 1), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            btnSlotDelete[slot].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new AlertDialog.Builder(ConfigActivity.this)
+                            .setTitle(R.string.dialog_delete_save_title)
+                            .setMessage(getString(R.string.dialog_delete_save_message, slot + 1))
+                            .setPositiveButton(R.string.dialog_delete_positive, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    File file = getSaveStateFile(slot);
+                                    if (file != null && file.exists()) {
+                                        file.delete();
+                                    }
+                                    updateSlotUi(slot);
+                                    Toast.makeText(ConfigActivity.this, getString(R.string.toast_state_deleted, slot + 1), Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .setNegativeButton(R.string.dialog_delete_negative, null)
+                            .show();
+                }
+            });
+        }
+
+        btnLoadChapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final int chapterIdx = spChapters.getSelectedItemPosition();
+                if (chapterIdx < 0 || chapterIdx >= 13) return;
+                final String chapterName = spChapters.getSelectedItem().toString();
+
+                new AlertDialog.Builder(ConfigActivity.this)
+                        .setTitle(R.string.dialog_load_chapter_title)
+                        .setMessage(getString(R.string.dialog_load_chapter_message, chapterName))
+                        .setPositiveButton(R.string.dialog_load_chapter_positive, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                boolean ok = MainActivity.loadGameReferenceState(chapterIdx);
+                                if (ok) {
+                                    Toast.makeText(ConfigActivity.this, getString(R.string.toast_chapter_loaded, chapterName), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(ConfigActivity.this, R.string.toast_chapter_load_error, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        })
+                        .setNegativeButton(R.string.dialog_restore_negative, null)
+                        .show();
+            }
+        });
+
+        spLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            private boolean isFirst = true;
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (isFirst) {
+                    isFirst = false;
+                    return;
+                }
+                if (position >= 0 && position < languageOptions.size()) {
+                    String newCode = languageOptions.get(position).code;
+                    String savedLang = LocaleHelper.getEffectiveLanguage(ConfigActivity.this, configHelper.getValue("General", "Language", ""));
+                    if (!newCode.equalsIgnoreCase(savedLang)) {
+                        syncUiToConfigHelper();
+                        configHelper.setValue("General", "Language", newCode);
+                        configHelper.save();
+                        MainActivity.reloadGameConfig();
+                        LocaleHelper.updateResources(ConfigActivity.this, newCode);
+                        recreate();
+                    }
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        cbEnableShader.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isUpdatingShaderUi) return;
+                isUpdatingShaderUi = true;
+                if (isChecked) {
+                    int pos = spShaderPreset.getSelectedItemPosition();
+                    if (pos <= 0) {
+                        pos = 1; // Default to Sharp Bilinear
+                        spShaderPreset.setSelection(pos);
+                    }
+                    ShaderPreset preset = shaderPresets.get(pos);
+                    tvShaderDesc.setText(preset.description);
+                    if (pos == shaderPresets.size() - 1) {
+                        layoutCustomShader.setVisibility(View.VISIBLE);
+                    } else {
+                        layoutCustomShader.setVisibility(View.GONE);
+                        etShader.setText(preset.path);
+                    }
+                    setSpinnerSelection(spOutputMethod, OUTPUT_METHODS, "OpenGL ES", "OpenGL ES");
+                } else {
+                    spShaderPreset.setSelection(0);
+                    tvShaderDesc.setText(shaderPresets.get(0).description);
+                    etShader.setText("");
+                    layoutCustomShader.setVisibility(View.GONE);
+                }
+                isUpdatingShaderUi = false;
+            }
+        });
+
+        spShaderPreset.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (isUpdatingShaderUi) return;
+                isUpdatingShaderUi = true;
+                ShaderPreset preset = shaderPresets.get(position);
+                tvShaderDesc.setText(preset.description);
+
+                if (position == 0) {
+                    cbEnableShader.setChecked(false);
+                    etShader.setText("");
+                    layoutCustomShader.setVisibility(View.GONE);
+                } else if (position == shaderPresets.size() - 1) {
+                    cbEnableShader.setChecked(true);
+                    layoutCustomShader.setVisibility(View.VISIBLE);
+                    setSpinnerSelection(spOutputMethod, OUTPUT_METHODS, "OpenGL ES", "OpenGL ES");
+                } else {
+                    cbEnableShader.setChecked(true);
+                    layoutCustomShader.setVisibility(View.GONE);
+                    etShader.setText(preset.path);
+                    setSpinnerSelection(spOutputMethod, OUTPUT_METHODS, "OpenGL ES", "OpenGL ES");
+                }
+                isUpdatingShaderUi = false;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        sbMsuVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                tvMsuVolumeLabel.setText(getString(R.string.label_msu_volume, progress));
+            }
+            @Override public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                syncUiToConfigHelper();
+                if (configHelper.save()) {
+                    MainActivity.reloadGameConfig();
+                    String lang = configHelper.getValue("General", "Language", "pt");
+                    LocaleHelper.updateResources(ConfigActivity.this, lang);
+                    Toast.makeText(ConfigActivity.this, R.string.toast_config_saved, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ConfigActivity.this, R.string.toast_config_save_error, Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
+        btnReloadRaw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                configHelper.load();
+                loadValuesToUi();
+                Toast.makeText(ConfigActivity.this, R.string.toast_file_reloaded, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        if (btnOpenItemEditor != null) {
+            btnOpenItemEditor.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showItemEditorDialog();
+                }
+            });
+        }
+
+        if (btnDownloadSprites != null) {
+            btnDownloadSprites.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ConfigActivity.this, SpriteDownloaderActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }
+
+        btnRestoreDefaults.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(ConfigActivity.this)
+                        .setTitle(R.string.dialog_restore_title)
+                        .setMessage(R.string.dialog_restore_message)
+                        .setPositiveButton(R.string.dialog_restore_positive, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (configHelper.restoreDefaults(ConfigActivity.this)) {
+                                    loadValuesToUi();
+                                    MainActivity.reloadGameConfig();
+                                    Toast.makeText(ConfigActivity.this, R.string.toast_restore_success, Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(ConfigActivity.this, R.string.toast_restore_error, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        })
+                        .setNegativeButton(R.string.dialog_restore_negative, null)
+                        .show();
+            }
+        });
+    }
+
+    private void showItemEditorDialog() {
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_inventory_editor);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        // Spinners
+        final Spinner spSword = dialog.findViewById(R.id.sp_item_sword);
+        final Spinner spShield = dialog.findViewById(R.id.sp_item_shield);
+        final Spinner spArmor = dialog.findViewById(R.id.sp_item_armor);
+        final Spinner spGloves = dialog.findViewById(R.id.sp_item_gloves);
+        final Spinner spBow = dialog.findViewById(R.id.sp_item_bow);
+        final Spinner spArrows = dialog.findViewById(R.id.sp_item_arrows);
+        final Spinner spBoomerang = dialog.findViewById(R.id.sp_item_boomerang);
+        final Spinner spMushroom = dialog.findViewById(R.id.sp_item_mushroom);
+        final Spinner spFlute = dialog.findViewById(R.id.sp_item_flute);
+        final Spinner spBombs = dialog.findViewById(R.id.sp_item_bombs);
+        final Spinner spMagicConsumption = dialog.findViewById(R.id.sp_item_magic_consumption);
+        final Spinner spBottle1 = dialog.findViewById(R.id.sp_item_bottle_1);
+        final Spinner spBottle2 = dialog.findViewById(R.id.sp_item_bottle_2);
+        final Spinner spBottle3 = dialog.findViewById(R.id.sp_item_bottle_3);
+        final Spinner spBottle4 = dialog.findViewById(R.id.sp_item_bottle_4);
+        final Spinner spHearts = dialog.findViewById(R.id.sp_item_hearts);
+
+        // CheckBoxes - Tools
+        final CheckBox cbHookshot = dialog.findViewById(R.id.cb_item_hookshot);
+        final CheckBox cbTorch = dialog.findViewById(R.id.cb_item_torch);
+        final CheckBox cbHammer = dialog.findViewById(R.id.cb_item_hammer);
+        final CheckBox cbBugNet = dialog.findViewById(R.id.cb_item_bug_net);
+        final CheckBox cbBookOfMudora = dialog.findViewById(R.id.cb_item_book_of_mudora);
+        final CheckBox cbBoots = dialog.findViewById(R.id.cb_item_boots);
+        final CheckBox cbFlippers = dialog.findViewById(R.id.cb_item_flippers);
+        final CheckBox cbMoonPearl = dialog.findViewById(R.id.cb_item_moon_pearl);
+
+        // CheckBoxes - Magic
+        final CheckBox cbFireRod = dialog.findViewById(R.id.cb_item_fire_rod);
+        final CheckBox cbIceRod = dialog.findViewById(R.id.cb_item_ice_rod);
+        final CheckBox cbBombos = dialog.findViewById(R.id.cb_item_bombos);
+        final CheckBox cbEther = dialog.findViewById(R.id.cb_item_ether);
+        final CheckBox cbQuake = dialog.findViewById(R.id.cb_item_quake);
+        final CheckBox cbCaneSomaria = dialog.findViewById(R.id.cb_cane_somaria);
+        final CheckBox cbCaneByrna = dialog.findViewById(R.id.cb_cane_byrna);
+        final CheckBox cbCape = dialog.findViewById(R.id.cb_cape);
+        final CheckBox cbMirror = dialog.findViewById(R.id.cb_mirror);
+
+        // CheckBoxes - Collectibles
+        final CheckBox cbPendantCourage = dialog.findViewById(R.id.cb_pendant_courage);
+        final CheckBox cbPendantWisdom = dialog.findViewById(R.id.cb_pendant_wisdom);
+        final CheckBox cbPendantPower = dialog.findViewById(R.id.cb_pendant_power);
+
+        final CheckBox cbCrystal1 = dialog.findViewById(R.id.cb_crystal_1);
+        final CheckBox cbCrystal2 = dialog.findViewById(R.id.cb_crystal_2);
+        final CheckBox cbCrystal3 = dialog.findViewById(R.id.cb_crystal_3);
+        final CheckBox cbCrystal4 = dialog.findViewById(R.id.cb_crystal_4);
+        final CheckBox cbCrystal5 = dialog.findViewById(R.id.cb_crystal_5);
+        final CheckBox cbCrystal6 = dialog.findViewById(R.id.cb_crystal_6);
+        final CheckBox cbCrystal7 = dialog.findViewById(R.id.cb_crystal_7);
+
+        // Buttons
+        Button btnPresetMax = dialog.findViewById(R.id.btn_preset_max);
+        Button btnPresetClean = dialog.findViewById(R.id.btn_preset_clean);
+        Button btnCancel = dialog.findViewById(R.id.btn_cancel_items);
+        Button btnSaveApply = dialog.findViewById(R.id.btn_save_apply_items);
+
+        // Adapters using string arrays
+        setupSpinnerAdapter(spSword, Arrays.asList(getResources().getStringArray(R.array.item_sword_list)));
+        setupSpinnerAdapter(spShield, Arrays.asList(getResources().getStringArray(R.array.item_shield_list)));
+        setupSpinnerAdapter(spArmor, Arrays.asList(getResources().getStringArray(R.array.item_armor_list)));
+        setupSpinnerAdapter(spGloves, Arrays.asList(getResources().getStringArray(R.array.item_gloves_list)));
+        setupSpinnerAdapter(spBow, Arrays.asList(getResources().getStringArray(R.array.item_bow_list)));
+        setupSpinnerAdapter(spArrows, Arrays.asList(getResources().getStringArray(R.array.item_arrows_list)));
+        setupSpinnerAdapter(spBoomerang, Arrays.asList(getResources().getStringArray(R.array.item_boomerang_list)));
+        setupSpinnerAdapter(spMushroom, Arrays.asList(getResources().getStringArray(R.array.item_mushroom_list)));
+        setupSpinnerAdapter(spFlute, Arrays.asList(getResources().getStringArray(R.array.item_flute_list)));
+        setupSpinnerAdapter(spBombs, Arrays.asList(getResources().getStringArray(R.array.item_bombs_list)));
+        setupSpinnerAdapter(spMagicConsumption, Arrays.asList(getResources().getStringArray(R.array.item_magic_consumption_list)));
+        setupSpinnerAdapter(spBottle1, Arrays.asList(getResources().getStringArray(R.array.item_bottle_list)));
+        setupSpinnerAdapter(spBottle2, Arrays.asList(getResources().getStringArray(R.array.item_bottle_list)));
+        setupSpinnerAdapter(spBottle3, Arrays.asList(getResources().getStringArray(R.array.item_bottle_list)));
+        setupSpinnerAdapter(spBottle4, Arrays.asList(getResources().getStringArray(R.array.item_bottle_list)));
+        setupSpinnerAdapter(spHearts, Arrays.asList(getResources().getStringArray(R.array.item_hearts_list)));
+
+        // Carregar estado atual da memória do jogo
+        byte[] raw = MainActivity.getGameInventory();
+        if (raw == null || raw.length < 64 || isAllZeros(raw)) {
+            raw = readInventoryFromSramFile();
+        }
+
+        if (raw != null && raw.length >= 64) {
+            // Equipamentos
+            int sword = raw[0x19] & 0xFF;
+            spSword.setSelection(Math.min(sword, 4));
+
+            int shield = raw[0x1A] & 0xFF;
+            spShield.setSelection(Math.min(shield, 3));
+
+            int armor = raw[0x1B] & 0xFF;
+            spArmor.setSelection(Math.min(armor, 2));
+
+            int gloves = raw[0x14] & 0xFF;
+            spGloves.setSelection(Math.min(gloves, 2));
+
+            // Ferramentas
+            int bow = raw[0x00] & 0xFF;
+            spBow.setSelection(Math.min(bow, 4));
+
+            int arrows = raw[0x37] & 0xFF;
+            spArrows.setSelection(Math.min(arrows / 10, 7));
+
+            int boomerang = raw[0x01] & 0xFF;
+            spBoomerang.setSelection(Math.min(boomerang, 2));
+
+            int mushroom = raw[0x04] & 0xFF;
+            spMushroom.setSelection(Math.min(mushroom, 2));
+
+            int flute = raw[0x0C] & 0xFF;
+            spFlute.setSelection(Math.min(flute, 3));
+
+            int bombs = raw[0x03] & 0xFF;
+            spBombs.setSelection(Math.min(bombs / 10, 5));
+
+            cbHookshot.setChecked((raw[0x02] & 0xFF) != 0);
+            cbTorch.setChecked((raw[0x0A] & 0xFF) != 0);
+            cbHammer.setChecked((raw[0x0B] & 0xFF) != 0);
+            cbBugNet.setChecked((raw[0x0D] & 0xFF) != 0);
+            cbBookOfMudora.setChecked((raw[0x0E] & 0xFF) != 0);
+            cbBoots.setChecked((raw[0x15] & 0xFF) != 0);
+            cbFlippers.setChecked((raw[0x16] & 0xFF) != 0);
+            cbMoonPearl.setChecked((raw[0x17] & 0xFF) != 0);
+
+            // Itens Mágicos
+            cbFireRod.setChecked((raw[0x05] & 0xFF) != 0);
+            cbIceRod.setChecked((raw[0x06] & 0xFF) != 0);
+            cbBombos.setChecked((raw[0x07] & 0xFF) != 0);
+            cbEther.setChecked((raw[0x08] & 0xFF) != 0);
+            cbQuake.setChecked((raw[0x09] & 0xFF) != 0);
+            cbCaneSomaria.setChecked((raw[0x10] & 0xFF) != 0);
+            cbCaneByrna.setChecked((raw[0x11] & 0xFF) != 0);
+            cbCape.setChecked((raw[0x12] & 0xFF) != 0);
+            cbMirror.setChecked((raw[0x13] & 0xFF) != 0);
+
+            int magicCons = raw[0x3B] & 0xFF;
+            spMagicConsumption.setSelection(Math.min(magicCons, 2));
+
+            // Garrafas
+            spBottle1.setSelection(Math.min(raw[0x1C] & 0xFF, 7));
+            spBottle2.setSelection(Math.min(raw[0x1D] & 0xFF, 7));
+            spBottle3.setSelection(Math.min(raw[0x1E] & 0xFF, 7));
+            spBottle4.setSelection(Math.min(raw[0x1F] & 0xFF, 7));
+
+            // Vida
+            int maxHealth = (raw[0x2C] & 0xFF) / 8;
+            if (maxHealth < 3) maxHealth = 3;
+            if (maxHealth > 20) maxHealth = 20;
+            spHearts.setSelection(maxHealth - 3);
+
+            // Pingentes & Cristais
+            int pendants = raw[0x34] & 0xFF;
+            cbPendantCourage.setChecked((pendants & 1) != 0);
+            cbPendantWisdom.setChecked((pendants & 2) != 0);
+            cbPendantPower.setChecked((pendants & 4) != 0);
+
+            int crystals = raw[0x3A] & 0xFF;
+            cbCrystal1.setChecked((crystals & (1 << 0)) != 0);
+            cbCrystal2.setChecked((crystals & (1 << 1)) != 0);
+            cbCrystal3.setChecked((crystals & (1 << 2)) != 0);
+            cbCrystal4.setChecked((crystals & (1 << 3)) != 0);
+            cbCrystal5.setChecked((crystals & (1 << 4)) != 0);
+            cbCrystal6.setChecked((crystals & (1 << 5)) != 0);
+            cbCrystal7.setChecked((crystals & (1 << 6)) != 0);
+        } else {
+            spSword.setSelection(0);
+            spShield.setSelection(0);
+            spArmor.setSelection(0);
+            spGloves.setSelection(0);
+            spBow.setSelection(0);
+            spArrows.setSelection(0);
+            spBoomerang.setSelection(0);
+            spMushroom.setSelection(0);
+            spFlute.setSelection(0);
+            spBombs.setSelection(0);
+            spMagicConsumption.setSelection(0);
+            spBottle1.setSelection(0);
+            spBottle2.setSelection(0);
+            spBottle3.setSelection(0);
+            spBottle4.setSelection(0);
+            spHearts.setSelection(0);
+        }
+
+        // Preset: Tudo no Máximo
+        final byte[] finalRaw = raw;
+        btnPresetMax.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                spSword.setSelection(4);
+                spShield.setSelection(3);
+                spArmor.setSelection(2);
+                spGloves.setSelection(2);
+                spBow.setSelection(4);
+                spArrows.setSelection(7);
+                spBoomerang.setSelection(2);
+                spMushroom.setSelection(2);
+                spFlute.setSelection(3);
+                spBombs.setSelection(5);
+
+                cbHookshot.setChecked(true);
+                cbTorch.setChecked(true);
+                cbHammer.setChecked(true);
+                cbBugNet.setChecked(true);
+                cbBookOfMudora.setChecked(true);
+                cbBoots.setChecked(true);
+                cbFlippers.setChecked(true);
+                cbMoonPearl.setChecked(true);
+
+                cbFireRod.setChecked(true);
+                cbIceRod.setChecked(true);
+                cbBombos.setChecked(true);
+                cbEther.setChecked(true);
+                cbQuake.setChecked(true);
+                cbCaneSomaria.setChecked(true);
+                cbCaneByrna.setChecked(true);
+                cbCape.setChecked(true);
+                cbMirror.setChecked(true);
+
+                spMagicConsumption.setSelection(1);
+
+                spBottle1.setSelection(5);
+                spBottle2.setSelection(5);
+                spBottle3.setSelection(4);
+                spBottle4.setSelection(7);
+
+                spHearts.setSelection(17);
+
+                cbPendantCourage.setChecked(true);
+                cbPendantWisdom.setChecked(true);
+                cbPendantPower.setChecked(true);
+
+                cbCrystal1.setChecked(true);
+                cbCrystal2.setChecked(true);
+                cbCrystal3.setChecked(true);
+                cbCrystal4.setChecked(true);
+                cbCrystal5.setChecked(true);
+                cbCrystal6.setChecked(true);
+                cbCrystal7.setChecked(true);
+
+                Toast.makeText(ConfigActivity.this, R.string.toast_preset_max, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Preset: Limpar Itens
+        btnPresetClean.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                spSword.setSelection(0);
+                spShield.setSelection(0);
+                spArmor.setSelection(0);
+                spGloves.setSelection(0);
+                spBow.setSelection(0);
+                spArrows.setSelection(0);
+                spBoomerang.setSelection(0);
+                spMushroom.setSelection(0);
+                spFlute.setSelection(0);
+                spBombs.setSelection(0);
+
+                cbHookshot.setChecked(false);
+                cbTorch.setChecked(false);
+                cbHammer.setChecked(false);
+                cbBugNet.setChecked(false);
+                cbBookOfMudora.setChecked(false);
+                cbBoots.setChecked(false);
+                cbFlippers.setChecked(false);
+                cbMoonPearl.setChecked(false);
+
+                cbFireRod.setChecked(false);
+                cbIceRod.setChecked(false);
+                cbBombos.setChecked(false);
+                cbEther.setChecked(false);
+                cbQuake.setChecked(false);
+                cbCaneSomaria.setChecked(false);
+                cbCaneByrna.setChecked(false);
+                cbCape.setChecked(false);
+                cbMirror.setChecked(false);
+
+                spMagicConsumption.setSelection(0);
+
+                spBottle1.setSelection(0);
+                spBottle2.setSelection(0);
+                spBottle3.setSelection(0);
+                spBottle4.setSelection(0);
+
+                spHearts.setSelection(0);
+
+                cbPendantCourage.setChecked(false);
+                cbPendantWisdom.setChecked(false);
+                cbPendantPower.setChecked(false);
+
+                cbCrystal1.setChecked(false);
+                cbCrystal2.setChecked(false);
+                cbCrystal3.setChecked(false);
+                cbCrystal4.setChecked(false);
+                cbCrystal5.setChecked(false);
+                cbCrystal6.setChecked(false);
+                cbCrystal7.setChecked(false);
+
+                Toast.makeText(ConfigActivity.this, R.string.toast_preset_clean, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        btnSaveApply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                byte[] data = (finalRaw != null && finalRaw.length >= 64) ? finalRaw.clone() : new byte[64];
+
+                // Bow (0x00)
+                data[0x00] = (byte) spBow.getSelectedItemPosition();
+                // Boomerang (0x01)
+                data[0x01] = (byte) spBoomerang.getSelectedItemPosition();
+                // Hookshot (0x02)
+                data[0x02] = (byte) (cbHookshot.isChecked() ? 1 : 0);
+                // Bombs (0x03)
+                int bombCount = spBombs.getSelectedItemPosition() * 10;
+                data[0x03] = (byte) bombCount;
+                data[0x30] = (byte) (bombCount > 10 ? 6 : 0);
+                // Mushroom / Powder (0x04)
+                data[0x04] = (byte) spMushroom.getSelectedItemPosition();
+                // Fire Rod (0x05)
+                data[0x05] = (byte) (cbFireRod.isChecked() ? 1 : 0);
+                // Ice Rod (0x06)
+                data[0x06] = (byte) (cbIceRod.isChecked() ? 1 : 0);
+                // Bombos (0x07)
+                data[0x07] = (byte) (cbBombos.isChecked() ? 1 : 0);
+                // Ether (0x08)
+                data[0x08] = (byte) (cbEther.isChecked() ? 1 : 0);
+                // Quake (0x09)
+                data[0x09] = (byte) (cbQuake.isChecked() ? 1 : 0);
+                // Torch (0x0A)
+                data[0x0A] = (byte) (cbTorch.isChecked() ? 1 : 0);
+                // Hammer (0x0B)
+                data[0x0B] = (byte) (cbHammer.isChecked() ? 1 : 0);
+                // Flute / Shovel (0x0C)
+                data[0x0C] = (byte) spFlute.getSelectedItemPosition();
+                // Bug Net (0x0D)
+                data[0x0D] = (byte) (cbBugNet.isChecked() ? 1 : 0);
+                // Book of Mudora (0x0E)
+                data[0x0E] = (byte) (cbBookOfMudora.isChecked() ? 1 : 0);
+                // Cane of Somaria (0x10)
+                data[0x10] = (byte) (cbCaneSomaria.isChecked() ? 1 : 0);
+                // Cane of Byrna (0x11)
+                data[0x11] = (byte) (cbCaneByrna.isChecked() ? 1 : 0);
+                // Magic Cape (0x12)
+                data[0x12] = (byte) (cbCape.isChecked() ? 1 : 0);
+                // Magic Mirror (0x13)
+                data[0x13] = (byte) (cbMirror.isChecked() ? 1 : 0);
+                // Gloves (0x14)
+                data[0x14] = (byte) spGloves.getSelectedItemPosition();
+                // Pegasus Boots (0x15)
+                data[0x15] = (byte) (cbBoots.isChecked() ? 1 : 0);
+                // Zora's Flippers (0x16)
+                data[0x16] = (byte) (cbFlippers.isChecked() ? 1 : 0);
+                // Moon Pearl (0x17)
+                data[0x17] = (byte) (cbMoonPearl.isChecked() ? 1 : 0);
+
+                // Sword (0x19)
+                data[0x19] = (byte) spSword.getSelectedItemPosition();
+                // Shield (0x1A)
+                data[0x1A] = (byte) spShield.getSelectedItemPosition();
+                // Armor (0x1B)
+                data[0x1B] = (byte) spArmor.getSelectedItemPosition();
+
+                // Bottles 1..4 (0x1C..0x1F)
+                data[0x1C] = (byte) spBottle1.getSelectedItemPosition();
+                data[0x1D] = (byte) spBottle2.getSelectedItemPosition();
+                data[0x1E] = (byte) spBottle3.getSelectedItemPosition();
+                data[0x1F] = (byte) spBottle4.getSelectedItemPosition();
+
+                // Bottle active index (0x0F)
+                if (data[0x1C] != 0 || data[0x1D] != 0 || data[0x1E] != 0 || data[0x1F] != 0) {
+                    if (data[0x0F] == 0) data[0x0F] = 1;
+                }
+
+                // Health capacity (0x2C)
+                int hearts = spHearts.getSelectedItemPosition() + 3;
+                data[0x2C] = (byte) (hearts * 8);
+                data[0x2D] = (byte) (hearts * 8);
+
+                // Magic Power (0x2E)
+                data[0x2E] = (byte) 0x80;
+
+                // Pendants (0x34)
+                int pendants = 0;
+                if (cbPendantCourage.isChecked()) pendants |= 1;
+                if (cbPendantWisdom.isChecked()) pendants |= 2;
+                if (cbPendantPower.isChecked()) pendants |= 4;
+                data[0x34] = (byte) pendants;
+
+                // Arrows (0x37)
+                int arrowCount = spArrows.getSelectedItemPosition() * 10;
+                data[0x37] = (byte) arrowCount;
+                data[0x31] = (byte) (arrowCount > 30 ? 7 : 0);
+
+                // Ability flags (0x39) - 0xF8 são as habilidades básicas de interação (pegar itens, ler placas, abrir baús, puxar)
+                int abilities = 0xF8;
+                if (cbBoots.isChecked()) abilities |= 4;
+                if (cbFlippers.isChecked()) abilities |= 2;
+                data[0x39] = (byte) abilities;
+
+                // Crystals (0x3A)
+                int crystals = 0;
+                if (cbCrystal1.isChecked()) crystals |= (1 << 0);
+                if (cbCrystal2.isChecked()) crystals |= (1 << 1);
+                if (cbCrystal3.isChecked()) crystals |= (1 << 2);
+                if (cbCrystal4.isChecked()) crystals |= (1 << 3);
+                if (cbCrystal5.isChecked()) crystals |= (1 << 4);
+                if (cbCrystal6.isChecked()) crystals |= (1 << 5);
+                if (cbCrystal7.isChecked()) crystals |= (1 << 6);
+                data[0x3A] = (byte) crystals;
+
+                // Magic consumption (0x3B)
+                data[0x3B] = (byte) spMagicConsumption.getSelectedItemPosition();
+
+                MainActivity.setGameInventory(data);
+
+                Toast.makeText(ConfigActivity.this, R.string.toast_inventory_saved, Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private boolean isAllZeros(byte[] arr) {
+        if (arr == null) return true;
+        for (byte b : arr) {
+            if (b != 0) return false;
+        }
+        return true;
+    }
+
+    private byte[] readInventoryFromSramFile() {
+        try {
+            File externalDir = getExternalFilesDir(null);
+            if (externalDir != null) {
+                File sramFile = new File(externalDir, "saves/sram.dat");
+                if (sramFile.exists() && sramFile.length() >= 0x380) {
+                    byte[] sram = new byte[(int) sramFile.length()];
+                    try (FileInputStream fis = new FileInputStream(sramFile)) {
+                        int totalRead = 0;
+                        while (totalRead < sram.length) {
+                            int r = fis.read(sram, totalRead, sram.length - totalRead);
+                            if (r <= 0) break;
+                            totalRead += r;
+                        }
+                    }
+                    for (int slot = 0; slot < 3; slot++) {
+                        int slotOffs = slot * 0x500;
+                        int invOffs = slotOffs + 0x340;
+                        if (invOffs + 64 <= sram.length) {
+                            byte[] buf = Arrays.copyOfRange(sram, invOffs, invOffs + 64);
+                            if (!isAllZeros(buf)) {
+                                return buf;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception ignored) {}
+        return null;
+    }
+
+    private void selectTab(Button tabButton, View panel) {
+        if (currentTabButton != null) {
+            currentTabButton.setTextColor(Color.parseColor("#B0C2DE"));
+        }
+        if (currentPanel != null) {
+            currentPanel.setVisibility(View.GONE);
+        }
+
+        currentTabButton = tabButton;
+        currentPanel = panel;
+
+        currentTabButton.setTextColor(Color.parseColor("#FFD700"));
+        currentPanel.setVisibility(View.VISIBLE);
+    }
+
+    private List<String> getChapterTitles() {
+        int[] chapterResIds = {
+                R.string.chapter_1, R.string.chapter_2, R.string.chapter_3,
+                R.string.chapter_4, R.string.chapter_5, R.string.chapter_6,
+                R.string.chapter_7, R.string.chapter_8, R.string.chapter_9,
+                R.string.chapter_10, R.string.chapter_11, R.string.chapter_12,
+                R.string.chapter_13
+        };
+        List<String> titles = new ArrayList<>();
+        for (int resId : chapterResIds) {
+            titles.add(getString(resId));
+        }
+        return titles;
+    }
+
+    private void updateAllSlotsUi() {
+        for (int i = 0; i < 5; i++) {
+            updateSlotUi(i);
+        }
+    }
+
+    private File getSaveStateFile(int slotIndex) {
+        String subpath = "saves/save" + slotIndex + ".sav";
+        // Candidate 1: /sdcard/zelda/saves/saveX.sav (MainActivity custom storage)
+        try {
+            File zeldaDir = new File(Environment.getExternalStorageDirectory(), "zelda");
+            File f = new File(zeldaDir, subpath);
+            if (f.exists()) return f;
+        } catch (Exception ignored) {}
+
+        // Candidate 2: super.getExternalFilesDir(null)/saves/saveX.sav (Android/data/<pkg>/files/saves/)
+        try {
+            File appExtDir = super.getExternalFilesDir(null);
+            if (appExtDir != null) {
+                File f = new File(appExtDir, subpath);
+                if (f.exists()) return f;
+            }
+        } catch (Exception ignored) {}
+
+        // Candidate 3: internal files dir
+        try {
+            File intDir = getFilesDir();
+            if (intDir != null) {
+                File f = new File(intDir, subpath);
+                if (f.exists()) return f;
+            }
+        } catch (Exception ignored) {}
+
+        // Default target file location
+        File baseDir = getExternalFilesDir(null);
+        return (baseDir != null) ? new File(baseDir, subpath) : null;
+    }
+
+    private void updateSlotUi(final int slotIndex) {
+        if (slotIndex < 0 || slotIndex >= 5) return;
+        if (tvSlotInfo[slotIndex] == null || btnSlotLoad[slotIndex] == null || btnSlotDelete[slotIndex] == null) return;
+
+        File file = getSaveStateFile(slotIndex);
+
+        if (file != null && file.exists() && file.length() > 0) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault());
+            String dateStr = sdf.format(new Date(file.lastModified()));
+            long sizeKb = Math.max(1, file.length() / 1024);
+            String sizeStr = sizeKb + " KB";
+            tvSlotInfo[slotIndex].setText(getString(R.string.slot_status_saved, dateStr, sizeStr));
+            tvSlotInfo[slotIndex].setTextColor(Color.parseColor("#4DD0E1"));
+
+            btnSlotLoad[slotIndex].setEnabled(true);
+            btnSlotLoad[slotIndex].setAlpha(1.0f);
+
+            btnSlotDelete[slotIndex].setEnabled(true);
+            btnSlotDelete[slotIndex].setAlpha(1.0f);
+        } else {
+            tvSlotInfo[slotIndex].setText(R.string.slot_status_empty);
+            tvSlotInfo[slotIndex].setTextColor(Color.parseColor("#8B9BB4"));
+
+            btnSlotLoad[slotIndex].setEnabled(false);
+            btnSlotLoad[slotIndex].setAlpha(0.35f);
+
+            btnSlotDelete[slotIndex].setEnabled(false);
+            btnSlotDelete[slotIndex].setAlpha(0.35f);
+        }
+    }
+}

@@ -1,0 +1,1413 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#0B0E14"
+    android:padding="8dp">
+
+    <!-- Top Header -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="6dp"
+        android:paddingTop="2dp"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/config_title"
+                android:textColor="#FFC107"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#8B9BB4"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_restore_defaults"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/btn_danger"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="@string/btn_restore_defaults"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp" />
+
+            <Button
+                android:id="@+id/btn_save"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:layout_marginRight="6dp"
+                android:background="@drawable/btn_gold"
+                android:paddingLeft="14dp"
+                android:paddingRight="14dp"
+                android:text="@string/btn_save"
+                android:textColor="#1A1500"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_close"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:background="@drawable/btn_dark"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:text="@string/btn_close"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#1E2836"
+        android:layout_marginBottom="6dp" />
+
+    <!-- Main Content Area: Left Tabs + Right Settings Panel -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <!-- Left Tabs Navigation -->
+        <ScrollView
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/card_bg"
+            android:padding="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/tab_general"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="@string/tab_general"
+                    android:textColor="#FFD700"
+                    android:background="@drawable/btn_dark"
+                    android:textSize="12sp"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="8dp"
+                    android:layout_marginBottom="4dp" />
+
+                <Button
+                    android:id="@+id/tab_graphics"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="@string/tab_graphics"
+                    android:textColor="#B0C2DE"
+                    android:background="@drawable/btn_dark"
+                    android:textSize="12sp"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="8dp"
+                    android:layout_marginBottom="4dp" />
+
+                <Button
+                    android:id="@+id/tab_sound"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="@string/tab_sound"
+                    android:textColor="#B0C2DE"
+                    android:background="@drawable/btn_dark"
+                    android:textSize="12sp"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="8dp"
+                    android:layout_marginBottom="4dp" />
+
+                <Button
+                    android:id="@+id/tab_features"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="@string/tab_features"
+                    android:textColor="#B0C2DE"
+                    android:background="@drawable/btn_dark"
+                    android:textSize="12sp"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="8dp"
+                    android:layout_marginBottom="4dp" />
+
+                <Button
+                    android:id="@+id/tab_saves"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="@string/tab_saves"
+                    android:textColor="#B0C2DE"
+                    android:background="@drawable/btn_dark"
+                    android:textSize="12sp"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="8dp"
+                    android:layout_marginBottom="4dp" />
+
+                <Button
+                    android:id="@+id/tab_raw_ini"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginBottom="4dp"
+                    android:background="@drawable/btn_dark"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="8dp"
+                    android:text="@string/tab_raw_ini"
+                    android:textColor="#B0C2DE"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- Right Content Container -->
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginLeft="6dp"
+            android:background="@drawable/card_bg"
+            android:padding="8dp">
+
+            <!-- Panel 1: Geral (General) -->
+            <ScrollView
+                android:id="@+id/panel_general"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/section_general_title"
+                        android:textColor="#FFD700"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Extended Aspect Ratio -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/label_aspect_ratio"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp" />
+
+                        <Spinner
+                            android:id="@+id/sp_aspect_ratio"
+                            android:layout_width="160dp"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+
+                    <!-- Autosave -->
+                    <CheckBox
+                        android:id="@+id/cb_autosave"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_autosave"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- DisableFrameDelay -->
+                    <CheckBox
+                        android:id="@+id/cb_disable_frame_delay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_disable_frame_delay"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- DisplayPerfInTitle -->
+                    <CheckBox
+                        android:id="@+id/cb_display_perf"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_display_perf"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Language -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/label_dialogue_language"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp" />
+
+                        <Spinner
+                            android:id="@+id/sp_language"
+                            android:layout_width="160dp"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- Panel 2: Gráficos (Graphics) -->
+            <ScrollView
+                android:id="@+id/panel_graphics"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/section_graphics_title"
+                        android:textColor="#FFD700"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- OutputMethod -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/label_output_method"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp" />
+
+                        <Spinner
+                            android:id="@+id/sp_output_method"
+                            android:layout_width="160dp"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+
+                    <!-- Window Scale -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/label_window_scale"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp" />
+
+                        <Spinner
+                            android:id="@+id/sp_window_scale"
+                            android:layout_width="160dp"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+
+                    <CheckBox
+                        android:id="@+id/cb_new_renderer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_new_renderer"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_enhanced_mode7"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_enhanced_mode7"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_no_sprite_limits"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_no_sprite_limits"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_linear_filtering"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_linear_filtering"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_ignore_aspect_ratio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_ignore_aspect_ratio"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_dim_flashes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_dim_flashes"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Custom Sprite / LinkGraphics -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/label_link_graphics"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp" />
+
+                        <EditText
+                            android:id="@+id/et_link_graphics"
+                            android:layout_width="160dp"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp"
+                            android:singleLine="true"
+                            android:hint="@string/hint_link_graphics"
+                            android:textColorHint="#666666"
+                            android:layout_marginRight="8dp" />
+
+                        <Button
+                            android:id="@+id/btn_download_sprites"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:background="@drawable/btn_gold"
+                            android:text="@string/btn_download_sprites"
+                            android:textColor="#1A1500"
+                            android:textSize="11sp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp" />
+                    </LinearLayout>
+
+                    <!-- Filtros Gráficos e Shaders (Nitidez e Qualidade Visual) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/card_bg"
+                        android:padding="10dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginBottom="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/section_shaders_title"
+                            android:textColor="#FFD700"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="6dp" />
+
+                        <!-- CheckBox Ativar Filtros -->
+                        <CheckBox
+                            android:id="@+id/cb_enable_shader"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/cb_enable_shader"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:layout_marginBottom="6dp" />
+
+                        <!-- Seletor de Preset de Filtro -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="6dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/label_shader_preset"
+                                android:textColor="#FFFFFF"
+                                android:textSize="12sp" />
+
+                            <Spinner
+                                android:id="@+id/sp_shader_preset"
+                                android:layout_width="220dp"
+                                android:layout_height="36dp"
+                                android:background="@drawable/edit_text_bg" />
+                        </LinearLayout>
+
+                        <!-- Descrição Dinâmica do Filtro -->
+                        <TextView
+                            android:id="@+id/tv_shader_desc"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/shader_desc_default"
+                            android:textColor="#85A5C7"
+                            android:textSize="11sp"
+                            android:textStyle="italic"
+                            android:layout_marginBottom="6dp" />
+
+                        <!-- Caminho Customizado de Shader (Opcional / Personalizado) -->
+                        <LinearLayout
+                            android:id="@+id/layout_custom_shader"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="@string/label_custom_shader"
+                                android:textColor="#FFFFFF"
+                                android:textSize="12sp" />
+
+                            <EditText
+                                android:id="@+id/et_shader"
+                                android:layout_width="220dp"
+                                android:layout_height="36dp"
+                                android:background="@drawable/edit_text_bg"
+                                android:textColor="#FFFFFF"
+                                android:textSize="12sp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:singleLine="true"
+                                android:hint="@string/hint_custom_shader"
+                                android:textColorHint="#666666" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- Panel 3: Áudio (Sound) -->
+            <ScrollView
+                android:id="@+id/panel_sound"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/section_sound_title"
+                        android:textColor="#FFD700"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_enable_audio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_enable_audio"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Audio Frequency -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/label_audio_freq"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp" />
+
+                        <Spinner
+                            android:id="@+id/sp_audio_freq"
+                            android:layout_width="160dp"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+
+                    <!-- Audio Samples / Buffer -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/label_audio_samples"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp" />
+
+                        <Spinner
+                            android:id="@+id/sp_audio_samples"
+                            android:layout_width="160dp"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+
+                    <!-- Audio Channels -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/label_audio_channels"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp" />
+
+                        <Spinner
+                            android:id="@+id/sp_audio_channels"
+                            android:layout_width="160dp"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+
+                    <!-- MSU Audio Support -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/label_enable_msu"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp" />
+
+                        <Spinner
+                            android:id="@+id/sp_enable_msu"
+                            android:layout_width="160dp"
+                            android:layout_height="36dp"
+                            android:background="@drawable/edit_text_bg" />
+                    </LinearLayout>
+
+                    <CheckBox
+                        android:id="@+id/cb_resume_msu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_resume_msu"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <!-- MSU Volume -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:id="@+id/tv_msu_volume_label"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/label_msu_volume"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp" />
+
+                        <SeekBar
+                            android:id="@+id/sb_msu_volume"
+                            android:layout_width="160dp"
+                            android:layout_height="wrap_content"
+                            android:max="100"
+                            android:progress="100" />
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- Panel 4: Gameplay (Features) -->
+            <ScrollView
+                android:id="@+id/panel_features"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/section_features_title"
+                        android:textColor="#FFD700"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <Button
+                        android:id="@+id/btn_open_item_editor"
+                        android:layout_width="match_parent"
+                        android:layout_height="42dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@drawable/btn_gold"
+                        android:text="@string/btn_open_item_editor"
+                        android:textColor="#000000"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <CheckBox
+                        android:id="@+id/cb_item_switch_lr"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_item_switch_lr"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_item_switch_limit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_item_switch_limit"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_turn_while_dashing"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_turn_while_dashing"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_mirror_darkworld"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_mirror_darkworld"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_collect_with_sword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_collect_with_sword"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_break_pots"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_break_pots"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_disable_low_health_beep"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_disable_low_health_beep"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_skip_intro"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_skip_intro"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_show_max_yellow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_show_max_yellow"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_more_active_bombs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_more_active_bombs"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_carry_more_rupees"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_carry_more_rupees"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_misc_bug_fixes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_misc_bug_fixes"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_game_changing_bug_fixes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_game_changing_bug_fixes"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_cancel_bird_travel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_cancel_bird_travel"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_skip_dialogue_a"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_skip_dialogue_a"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_max_hearts"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/cb_max_hearts"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- Panel 5: Save States & Checkpoints -->
+            <ScrollView
+                android:id="@+id/panel_saves"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/section_saves_title"
+                        android:textColor="#FFD700"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <!-- Quick Slots Card -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/card_bg"
+                        android:padding="8dp"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/section_quick_slots_title"
+                            android:textColor="#4DD0E1"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/quick_slots_desc"
+                            android:textColor="#8B9BB4"
+                            android:textSize="11sp"
+                            android:layout_marginBottom="8dp" />
+
+                        <!-- Slot 1 -->
+                        <LinearLayout
+                            android:id="@+id/card_slot_1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/card_bg"
+                            android:padding="6dp"
+                            android:layout_marginBottom="4dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_slot_1_label"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Slot 1"
+                                    android:textColor="#FFD700"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tv_slot_1_info"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/slot_status_empty"
+                                    android:textColor="#8B9BB4"
+                                    android:textSize="10sp" />
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btn_slot_1_save"
+                                android:layout_width="wrap_content"
+                                android:layout_height="32dp"
+                                android:background="@drawable/btn_gold"
+                                android:text="@string/btn_slot_save"
+                                android:textColor="#1A1500"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp" />
+
+                            <Button
+                                android:id="@+id/btn_slot_1_load"
+                                android:layout_width="wrap_content"
+                                android:layout_height="32dp"
+                                android:layout_marginLeft="4dp"
+                                android:background="@drawable/btn_dark"
+                                android:text="@string/btn_slot_load"
+                                android:textColor="#FFFFFF"
+                                android:textSize="11sp"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp" />
+
+                            <Button
+                                android:id="@+id/btn_slot_1_delete"
+                                android:layout_width="wrap_content"
+                                android:layout_height="32dp"
+                                android:layout_marginLeft="4dp"
+                                android:background="@drawable/btn_danger"
+                                android:text="@string/btn_slot_delete"
+                                android:textColor="#FFFFFF"
+                                android:textSize="11sp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp" />
+                        </LinearLayout>
+
+                        <!-- Slot 2 -->
+                        <LinearLayout
+                            android:id="@+id/card_slot_2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/card_bg"
+                            android:padding="6dp"
+                            android:layout_marginBottom="4dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_slot_2_label"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Slot 2"
+                                    android:textColor="#FFD700"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tv_slot_2_info"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/slot_status_empty"
+                                    android:textColor="#8B9BB4"
+                                    android:textSize="10sp" />
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btn_slot_2_save"
+                                android:layout_width="wrap_content"
+                                android:layout_height="32dp"
+                                android:background="@drawable/btn_gold"
+                                android:text="@string/btn_slot_save"
+                                android:textColor="#1A1500"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp" />
+
+                            <Button
+                                android:id="@+id/btn_slot_2_load"
+                                android:layout_width="wrap_content"
+                                android:layout_height="32dp"
+                                android:layout_marginLeft="4dp"
+                                android:background="@drawable/btn_dark"
+                                android:text="@string/btn_slot_load"
+                                android:textColor="#FFFFFF"
+                                android:textSize="11sp"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp" />
+
+                            <Button
+                                android:id="@+id/btn_slot_2_delete"
+                                android:layout_width="wrap_content"
+                                android:layout_height="32dp"
+                                android:layout_marginLeft="4dp"
+                                android:background="@drawable/btn_danger"
+                                android:text="@string/btn_slot_delete"
+                                android:textColor="#FFFFFF"
+                                android:textSize="11sp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp" />
+                        </LinearLayout>
+
+                        <!-- Slot 3 -->
+                        <LinearLayout
+                            android:id="@+id/card_slot_3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/card_bg"
+                            android:padding="6dp"
+                            android:layout_marginBottom="4dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_slot_3_label"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Slot 3"
+                                    android:textColor="#FFD700"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tv_slot_3_info"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/slot_status_empty"
+                                    android:textColor="#8B9BB4"
+                                    android:textSize="10sp" />
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btn_slot_3_save"
+                                android:layout_width="wrap_content"
+                                android:layout_height="32dp"
+                                android:background="@drawable/btn_gold"
+                                android:text="@string/btn_slot_save"
+                                android:textColor="#1A1500"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp" />
+
+                            <Button
+                                android:id="@+id/btn_slot_3_load"
+                                android:layout_width="wrap_content"
+                                android:layout_height="32dp"
+                                android:layout_marginLeft="4dp"
+                                android:background="@drawable/btn_dark"
+                                android:text="@string/btn_slot_load"
+                                android:textColor="#FFFFFF"
+                                android:textSize="11sp"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp" />
+
+                            <Button
+                                android:id="@+id/btn_slot_3_delete"
+                                android:layout_width="wrap_content"
+                                android:layout_height="32dp"
+                                android:layout_marginLeft="4dp"
+                                android:background="@drawable/btn_danger"
+                                android:text="@string/btn_slot_delete"
+                                android:textColor="#FFFFFF"
+                                android:textSize="11sp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp" />
+                        </LinearLayout>
+
+                        <!-- Slot 4 -->
+                        <LinearLayout
+                            android:id="@+id/card_slot_4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/card_bg"
+                            android:padding="6dp"
+                            android:layout_marginBottom="4dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_slot_4_label"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Slot 4"
+                                    android:textColor="#FFD700"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tv_slot_4_info"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/slot_status_empty"
+                                    android:textColor="#8B9BB4"
+                                    android:textSize="10sp" />
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btn_slot_4_save"
+                                android:layout_width="wrap_content"
+                                android:layout_height="32dp"
+                                android:background="@drawable/btn_gold"
+                                android:text="@string/btn_slot_save"
+                                android:textColor="#1A1500"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp" />
+
+                            <Button
+                                android:id="@+id/btn_slot_4_load"
+                                android:layout_width="wrap_content"
+                                android:layout_height="32dp"
+                                android:layout_marginLeft="4dp"
+                                android:background="@drawable/btn_dark"
+                                android:text="@string/btn_slot_load"
+                                android:textColor="#FFFFFF"
+                                android:textSize="11sp"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp" />
+
+                            <Button
+                                android:id="@+id/btn_slot_4_delete"
+                                android:layout_width="wrap_content"
+                                android:layout_height="32dp"
+                                android:layout_marginLeft="4dp"
+                                android:background="@drawable/btn_danger"
+                                android:text="@string/btn_slot_delete"
+                                android:textColor="#FFFFFF"
+                                android:textSize="11sp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp" />
+                        </LinearLayout>
+
+                        <!-- Slot 5 -->
+                        <LinearLayout
+                            android:id="@+id/card_slot_5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:background="@drawable/card_bg"
+                            android:padding="6dp">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/tv_slot_5_label"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Slot 5"
+                                    android:textColor="#FFD700"
+                                    android:textSize="12sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tv_slot_5_info"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/slot_status_empty"
+                                    android:textColor="#8B9BB4"
+                                    android:textSize="10sp" />
+                            </LinearLayout>
+
+                            <Button
+                                android:id="@+id/btn_slot_5_save"
+                                android:layout_width="wrap_content"
+                                android:layout_height="32dp"
+                                android:background="@drawable/btn_gold"
+                                android:text="@string/btn_slot_save"
+                                android:textColor="#1A1500"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp" />
+
+                            <Button
+                                android:id="@+id/btn_slot_5_load"
+                                android:layout_width="wrap_content"
+                                android:layout_height="32dp"
+                                android:layout_marginLeft="4dp"
+                                android:background="@drawable/btn_dark"
+                                android:text="@string/btn_slot_load"
+                                android:textColor="#FFFFFF"
+                                android:textSize="11sp"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp" />
+
+                            <Button
+                                android:id="@+id/btn_slot_5_delete"
+                                android:layout_width="wrap_content"
+                                android:layout_height="32dp"
+                                android:layout_marginLeft="4dp"
+                                android:background="@drawable/btn_danger"
+                                android:text="@string/btn_slot_delete"
+                                android:textColor="#FFFFFF"
+                                android:textSize="11sp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <!-- Story Chapters Card -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/card_bg"
+                        android:padding="8dp"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/section_ref_saves_title"
+                            android:textColor="#4DD0E1"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ref_saves_desc"
+                            android:textColor="#8B9BB4"
+                            android:textSize="11sp"
+                            android:layout_marginBottom="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_select_chapter"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:layout_marginBottom="4dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <Spinner
+                                android:id="@+id/sp_chapters"
+                                android:layout_width="0dp"
+                                android:layout_height="36dp"
+                                android:layout_weight="1"
+                                android:background="@drawable/edit_text_bg" />
+
+                            <Button
+                                android:id="@+id/btn_load_chapter"
+                                android:layout_width="wrap_content"
+                                android:layout_height="36dp"
+                                android:layout_marginLeft="6dp"
+                                android:background="@drawable/btn_gold"
+                                android:text="@string/btn_load_chapter"
+                                android:textColor="#1A1500"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:paddingLeft="12dp"
+                                android:paddingRight="12dp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- Panel 6: Editor Direto (.ini) -->
+            <LinearLayout
+                android:id="@+id/panel_raw_ini"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:text="@string/section_raw_ini_title"
+                        android:textColor="#FFD700"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btn_reload_raw"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:layout_alignParentRight="true"
+                        android:background="@drawable/btn_dark"
+                        android:text="@string/btn_reload_raw"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp" />
+                </RelativeLayout>
+
+                <EditText
+                    android:id="@+id/et_raw_ini"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/edit_text_bg"
+                    android:textColor="#FFFFFF"
+                    android:textSize="11sp"
+                    android:gravity="top|left"
+                    android:padding="8dp"
+                    android:inputType="textMultiLine|textNoSuggestions"
+                    android:scrollbars="vertical"
+                    android:typeface="monospace" />
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+</LinearLayout>
