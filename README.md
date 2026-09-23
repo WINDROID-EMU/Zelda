@@ -1,4 +1,4 @@
-# Zenda - Zelda3 Android Port
+# Zelda - Zelda3 Android Port
 
 ![Screenshot 1](screenshots/screenshot1.png)
 ![Screenshot 2](screenshots/screenshot2.png)
