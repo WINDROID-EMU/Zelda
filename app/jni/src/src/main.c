@@ -27,6 +27,7 @@
 #include "util.h"
 #include "audio.h"
 #include "android_logging.h"
+#include "ra_bridge.h"
 #include "overworld_seamless.h"
 
 static bool g_run_without_emu = 0;
@@ -644,13 +645,14 @@ int main(int argc, char** argv) {
       }
     }
 
-    if (g_paused != audiopaused) {
-      audiopaused = g_paused;
+    bool game_paused = g_paused || RaIsDialogPaused();
+    if (game_paused != audiopaused) {
+      audiopaused = game_paused;
       if (device)
         SDL_PauseAudioDevice(device, audiopaused);
     }
 
-    if (g_paused) {
+    if (game_paused) {
       SDL_Delay(16);
       continue;
     }
@@ -664,6 +666,8 @@ int main(int argc, char** argv) {
     SDL_LockMutex(g_audio_mutex);
     bool is_replay = ZeldaRunFrame(inputs);
     SDL_UnlockMutex(g_audio_mutex);
+
+    RaFrame();
 
     frameCtr++;
 
@@ -714,6 +718,7 @@ int main(int argc, char** argv) {
   g_renderer_funcs.Destroy();
 
   SDL_DestroyWindow(window);
+  RaShutdown();
   SDL_Quit();
   //SaveConfigFile();
   return 0;

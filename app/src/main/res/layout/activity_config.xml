@@ -172,6 +172,18 @@
                     android:layout_marginBottom="4dp" />
 
                 <Button
+                    android:id="@+id/tab_achievements"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:text="@string/tab_achievements"
+                    android:textColor="#B0C2DE"
+                    android:background="@drawable/btn_dark"
+                    android:textSize="12sp"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="8dp"
+                    android:layout_marginBottom="4dp" />
+
+                <Button
                     android:id="@+id/tab_raw_ini"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
@@ -1355,6 +1367,174 @@
                                 android:paddingRight="12dp" />
                         </LinearLayout>
                     </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- Panel: RetroAchievements -->
+            <ScrollView
+                android:id="@+id/panel_achievements"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ra_config_title"
+                        android:textColor="#FFD700"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ra_config_subtitle"
+                        android:textColor="#8B9BB4"
+                        android:textSize="11sp"
+                        android:layout_marginBottom="8dp" />
+
+                    <CheckBox
+                        android:id="@+id/cb_ra_enabled"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ra_label_enabled"
+                        android:textColor="#FFFFFF"
+                        android:textSize="12sp"
+                        android:layout_marginBottom="6dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/card_bg"
+                        android:padding="8dp"
+                        android:layout_marginBottom="8dp">
+
+                        <TextView
+                            android:id="@+id/tv_ra_status"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/ra_status_disabled"
+                            android:textColor="#FFFFFF"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_ra_game"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/ra_game_none"
+                            android:textColor="#8B9BB4"
+                            android:textSize="11sp" />
+
+                        <TextView
+                            android:id="@+id/tv_ra_error"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:textColor="#FF6B6B"
+                            android:textSize="11sp"
+                            android:visibility="gone" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="8dp">
+
+                        <Button
+                            android:id="@+id/btn_ra_login"
+                            android:layout_width="wrap_content"
+                            android:layout_height="34dp"
+                            android:background="@drawable/btn_gold"
+                            android:text="@string/ra_btn_login"
+                            android:textColor="#1A1500"
+                            android:textSize="11sp"
+                            android:textStyle="bold"
+                            android:paddingLeft="12dp"
+                            android:paddingRight="12dp" />
+
+                        <Button
+                            android:id="@+id/btn_ra_view"
+                            android:layout_width="wrap_content"
+                            android:layout_height="34dp"
+                            android:layout_marginLeft="6dp"
+                            android:background="@drawable/btn_dark"
+                            android:text="@string/ra_btn_view"
+                            android:textColor="#FFFFFF"
+                            android:textSize="11sp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp" />
+
+                        <Button
+                            android:id="@+id/btn_ra_logout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="34dp"
+                            android:layout_marginLeft="6dp"
+                            android:background="@drawable/btn_danger"
+                            android:text="@string/ra_btn_logout"
+                            android:textColor="#FFFFFF"
+                            android:textSize="11sp"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ra_label_hash"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp"
+                        android:layout_marginBottom="2dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="8dp">
+
+                        <EditText
+                            android:id="@+id/et_ra_hash"
+                            android:layout_width="0dp"
+                            android:layout_height="36dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/edit_text_bg"
+                            android:hint="@string/ra_hash_hint"
+                            android:inputType="textNoSuggestions"
+                            android:padding="6dp"
+                            android:singleLine="true"
+                            android:textColor="#FFFFFF"
+                            android:textSize="10sp"
+                            android:typeface="monospace" />
+
+                        <Button
+                            android:id="@+id/btn_ra_apply_hash"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:layout_marginLeft="6dp"
+                            android:background="@drawable/btn_dark"
+                            android:text="@string/ra_btn_apply_hash"
+                            android:textColor="#FFFFFF"
+                            android:textSize="10sp"
+                            android:paddingLeft="8dp"
+                            android:paddingRight="8dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ra_footer"
+                        android:textColor="#8B9BB4"
+                        android:textSize="10sp" />
                 </LinearLayout>
             </ScrollView>
 

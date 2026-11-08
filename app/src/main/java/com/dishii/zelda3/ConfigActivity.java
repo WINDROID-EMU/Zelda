@@ -10,6 +10,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -83,6 +84,21 @@ public class ConfigActivity extends Activity {
 
     // Raw INI
     private EditText etRawIni;
+
+    // RetroAchievements
+    private Button tabAchievements;
+    private View panelAchievements;
+    private CheckBox cbRaEnabled;
+    private TextView tvRaStatus, tvRaGame, tvRaError;
+    private Button btnRaLogin, btnRaLogout, btnRaView, btnRaApplyHash;
+    private EditText etRaHash;
+    private boolean isUpdatingRaUi = false;
+    private final RetroAchievementsClient.Listener raListener = new RetroAchievementsClient.Listener() {
+        @Override
+        public void onRetroAchievementsChanged() {
+            refreshRaUi();
+        }
+    };
 
     public static class LanguageOption {
         public final String name;
@@ -203,6 +219,22 @@ public class ConfigActivity extends Activity {
                 etLinkGraphics.setText(linkGfx);
             }
         }
+
+        RetroAchievementsClient ra = RetroAchievementsClient.get();
+        if (ra != null) {
+            ra.addListener(raListener);
+            ra.refreshFromNative();
+            refreshRaUi();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        RetroAchievementsClient ra = RetroAchievementsClient.get();
+        if (ra != null) {
+            ra.removeListener(raListener);
+        }
+        super.onPause();
     }
 
     private void initViews() {
@@ -311,6 +343,19 @@ public class ConfigActivity extends Activity {
 
         // Raw
         etRawIni = findViewById(R.id.et_raw_ini);
+
+        // RetroAchievements
+        tabAchievements = findViewById(R.id.tab_achievements);
+        panelAchievements = findViewById(R.id.panel_achievements);
+        cbRaEnabled = findViewById(R.id.cb_ra_enabled);
+        tvRaStatus = findViewById(R.id.tv_ra_status);
+        tvRaGame = findViewById(R.id.tv_ra_game);
+        tvRaError = findViewById(R.id.tv_ra_error);
+        btnRaLogin = findViewById(R.id.btn_ra_login);
+        btnRaLogout = findViewById(R.id.btn_ra_logout);
+        btnRaView = findViewById(R.id.btn_ra_view);
+        btnRaApplyHash = findViewById(R.id.btn_ra_apply_hash);
+        etRaHash = findViewById(R.id.et_ra_hash);
     }
 
     private void setupSpinners() {
@@ -613,6 +658,54 @@ public class ConfigActivity extends Activity {
             public void onClick(View v) {
                 syncUiToConfigHelper();
                 selectTab(tabRawIni, panelRawIni);
+            }
+        });
+
+        tabAchievements.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                refreshRaUi();
+                selectTab(tabAchievements, panelAchievements);
+            }
+        });
+
+        cbRaEnabled.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isUpdatingRaUi) return;
+                RetroAchievementsClient client = RetroAchievementsClient.get();
+                if (client != null) {
+                    client.setEnabled(isChecked);
+                    refreshRaUi();
+                }
+            }
+        });
+
+        btnRaLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showRaLoginDialog();
+            }
+        });
+
+        btnRaLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmRaLogout();
+            }
+        });
+
+        btnRaView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AchievementsDialog.show(ConfigActivity.this, false);
+            }
+        });
+
+        btnRaApplyHash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                applyRaHash();
             }
         });
 
@@ -1341,6 +1434,199 @@ public class ConfigActivity extends Activity {
             }
         } catch (Exception ignored) {}
         return null;
+    }
+
+    private void refreshRaUi() {
+        RetroAchievementsClient client = RetroAchievementsClient.get();
+        if (client == null || tvRaStatus == null) return;
+
+        isUpdatingRaUi = true;
+        cbRaEnabled.setChecked(client.isEnabled());
+        isUpdatingRaUi = false;
+
+        int state = client.getState();
+        String status;
+        switch (state) {
+            case RetroAchievementsClient.STATE_DISABLED:
+                status = getString(R.string.ra_status_disabled);
+                break;
+            case RetroAchievementsClient.STATE_LOGGED_OUT:
+                status = getString(R.string.ra_status_logged_out);
+                break;
+            case RetroAchievementsClient.STATE_LOGGING_IN:
+                status = getString(R.string.ra_status_logging_in);
+                break;
+            case RetroAchievementsClient.STATE_LOGGED_IN:
+                status = getString(R.string.ra_status_logged_in, client.getDisplayName(), client.getScore());
+                break;
+            case RetroAchievementsClient.STATE_LOADING_GAME:
+                status = getString(R.string.ra_status_loading_game, client.getDisplayName());
+                break;
+            case RetroAchievementsClient.STATE_READY:
+                status = getString(R.string.ra_status_ready, client.getDisplayName(), client.getScore());
+                break;
+            default:
+                status = client.getError().isEmpty()
+                        ? getString(R.string.ra_status_error, getString(R.string.ra_status_logged_out))
+                        : getString(R.string.ra_status_error, client.getError());
+                break;
+        }
+        tvRaStatus.setText(status);
+
+        if (client.getGameTitle().isEmpty()) {
+            tvRaGame.setText(R.string.ra_game_none);
+        } else {
+            tvRaGame.setText(getString(R.string.ra_game_progress, client.getGameTitle(),
+                    client.getUnlockedCount(), client.getTotalCount(),
+                    client.getPointsUnlocked(), client.getPointsTotal()));
+        }
+
+        if (client.getError().isEmpty()) {
+            tvRaError.setVisibility(View.GONE);
+        } else {
+            tvRaError.setText(client.getError());
+            tvRaError.setVisibility(View.VISIBLE);
+        }
+
+        boolean hasSession = client.hasToken()
+                || state == RetroAchievementsClient.STATE_LOGGED_IN
+                || state == RetroAchievementsClient.STATE_LOADING_GAME
+                || state == RetroAchievementsClient.STATE_READY;
+        btnRaLogout.setEnabled(hasSession);
+        btnRaView.setEnabled(state == RetroAchievementsClient.STATE_READY);
+        btnRaLogin.setText(hasSession ? R.string.ra_btn_relogin : R.string.ra_btn_login);
+
+        if (!etRaHash.isFocused()) {
+            etRaHash.setText(client.getGameHash());
+        }
+    }
+
+    private void showRaLoginDialog() {
+        final RetroAchievementsClient client = RetroAchievementsClient.get();
+        if (client == null) {
+            Toast.makeText(this, R.string.ra_not_available, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_ra_login);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        final EditText etUser = dialog.findViewById(R.id.et_ra_username);
+        final EditText etPassword = dialog.findViewById(R.id.et_ra_password);
+        final CheckBox cbShowPassword = dialog.findViewById(R.id.cb_ra_show_password);
+        final TextView tvMessage = dialog.findViewById(R.id.tv_ra_login_message);
+        final Button btnSubmit = dialog.findViewById(R.id.btn_ra_login_submit);
+        Button btnCancel = dialog.findViewById(R.id.btn_ra_login_cancel);
+
+        etUser.setText(client.getUsername());
+
+        cbShowPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                int selection = etPassword.getSelectionEnd();
+                etPassword.setInputType(InputType.TYPE_CLASS_TEXT | (isChecked
+                        ? InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                        : InputType.TYPE_TEXT_VARIATION_PASSWORD));
+                selection = Math.max(0, Math.min(selection, etPassword.getText().length()));
+                etPassword.setSelection(selection);
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        final RetroAchievementsClient.Listener listener = new RetroAchievementsClient.Listener() {
+            @Override
+            public void onRetroAchievementsChanged() {
+                int state = client.getState();
+                if (state == RetroAchievementsClient.STATE_ERROR) {
+                    tvMessage.setTextColor(Color.parseColor("#FF6B6B"));
+                    tvMessage.setText(client.getError().isEmpty()
+                            ? getString(R.string.ra_status_error, getString(R.string.ra_status_logged_out))
+                            : client.getError());
+                    tvMessage.setVisibility(View.VISIBLE);
+                    btnSubmit.setEnabled(true);
+                } else if (state == RetroAchievementsClient.STATE_LOGGED_IN
+                        || state == RetroAchievementsClient.STATE_LOADING_GAME
+                        || state == RetroAchievementsClient.STATE_READY) {
+                    dialog.dismiss();
+                    Toast.makeText(ConfigActivity.this, R.string.ra_login_success, Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+        client.addListener(listener);
+
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface d) {
+                client.removeListener(listener);
+                etPassword.setText("");
+                refreshRaUi();
+            }
+        });
+
+        btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String user = etUser.getText().toString().trim();
+                String password = etPassword.getText().toString();
+                if (user.isEmpty() || password.isEmpty()) {
+                    tvMessage.setTextColor(Color.parseColor("#FF6B6B"));
+                    tvMessage.setText(R.string.ra_login_required);
+                    tvMessage.setVisibility(View.VISIBLE);
+                    return;
+                }
+
+                tvMessage.setTextColor(Color.parseColor("#FFD700"));
+                tvMessage.setText(R.string.ra_login_waiting);
+                tvMessage.setVisibility(View.VISIBLE);
+                btnSubmit.setEnabled(false);
+                client.login(user, password);
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void confirmRaLogout() {
+        final RetroAchievementsClient client = RetroAchievementsClient.get();
+        if (client == null) return;
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.ra_logout_title)
+                .setMessage(R.string.ra_logout_message)
+                .setPositiveButton(R.string.ra_logout_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        client.logout();
+                        refreshRaUi();
+                    }
+                })
+                .setNegativeButton(R.string.ra_cancel, null)
+                .show();
+    }
+
+    private void applyRaHash() {
+        RetroAchievementsClient client = RetroAchievementsClient.get();
+        if (client == null || etRaHash == null) return;
+
+        String hash = etRaHash.getText().toString().trim().toLowerCase(Locale.US);
+        if (!hash.matches("[0-9a-f]{32}")) {
+            Toast.makeText(this, R.string.ra_hash_invalid, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        client.setGameHash(hash);
+        Toast.makeText(this, R.string.ra_hash_saved, Toast.LENGTH_SHORT).show();
     }
 
     private void selectTab(Button tabButton, View panel) {

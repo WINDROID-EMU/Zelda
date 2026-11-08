@@ -1,5 +1,6 @@
 package com.dishii.zelda3;
 import org.libsdl.app.SDLActivity;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Build;
@@ -30,6 +31,15 @@ import android.graphics.RectF;
 
 //This class is the main SDLActivity and just sets up a bunch of default files
 public class MainActivity extends SDLActivity {
+
+    private VirtualGamepadView mGamepadView;
+
+    private final RetroAchievementsClient.Listener raListener = new RetroAchievementsClient.Listener() {
+        @Override
+        public void onRetroAchievementsChanged() {
+            if (mGamepadView != null) mGamepadView.invalidate();
+        }
+    };
 
     @Override
     public void setOrientationBis(int w, int h, boolean resizable, String hint) {
@@ -132,6 +142,9 @@ public class MainActivity extends SDLActivity {
         int analogPointerId = -1;
         
         ButtonDef toggleButton;
+        ButtonDef trophyButton;
+        int trophyPointerId = -1;
+        boolean trophyPressed = false;
         boolean controlsVisible = true;
 
         @Override
@@ -169,6 +182,7 @@ public class MainActivity extends SDLActivity {
             };
             
             toggleButton = new ButtonDef("☰", w / 2f, bw * 1.2f, bw * 0.5f, 0);
+            trophyButton = new ButtonDef("🏆", w / 2f + bw * 2.4f, bw * 1.2f, bw * 0.5f, 0);
         }
 
         @Override
@@ -207,6 +221,28 @@ public class MainActivity extends SDLActivity {
             float toggleTextY = toggleButton.y - ((textPaint.descent() + textPaint.ascent()) / 2);
             canvas.drawText(toggleButton.label, toggleButton.x, toggleTextY, textPaint);
             textPaint.setTextSize(oldSizeToggle);
+
+            // Draw RetroAchievements trophy indicator (always visible)
+            if (trophyButton != null) {
+                canvas.drawCircle(trophyButton.x, trophyButton.y, trophyButton.rx,
+                        trophyPressed ? fillPaint : strokePaint);
+                textPaint.setColor(trophyPressed ? COLOR_PRESSED_TEXT : COLOR_NORMAL);
+                float oldTrophySize = textPaint.getTextSize();
+                textPaint.setTextSize(oldTrophySize * 0.6f);
+                float trophyTextY = trophyButton.y - ((textPaint.descent() + textPaint.ascent()) / 2);
+                canvas.drawText(trophyButton.label, trophyButton.x, trophyTextY, textPaint);
+                textPaint.setTextSize(oldTrophySize);
+
+                int raTotal = RetroAchievementsClient.getTotalCountStatic();
+                if (raTotal > 0) {
+                    int raUnlocked = RetroAchievementsClient.getUnlockedCountStatic();
+                    textPaint.setColor(0xFFFFD700);
+                    textPaint.setTextSize(oldTrophySize * 0.32f);
+                    canvas.drawText(raUnlocked + "/" + raTotal, trophyButton.x,
+                            trophyButton.y + trophyButton.ry + textPaint.getTextSize() * 1.4f, textPaint);
+                    textPaint.setTextSize(oldTrophySize);
+                }
+            }
             
             if (!controlsVisible) return;
             
@@ -253,7 +289,15 @@ public class MainActivity extends SDLActivity {
             }
         }
 
+        private boolean isInside(ButtonDef button, float x, float y) {
+            if (button == null) return false;
+            float dx = x - button.x;
+            float dy = y - button.y;
+            return dx * dx + dy * dy <= (button.rx * 1.8f) * (button.rx * 1.8f);
+        }
+
         private boolean isTouchOverButton(float x, float y) {
+            if (isInside(trophyButton, x, y)) return true;
             if (toggleButton != null) {
                 float tx = x - toggleButton.x;
                 float ty = y - toggleButton.y;
@@ -346,9 +390,38 @@ public class MainActivity extends SDLActivity {
                 }
             }
 
+            // Handle RetroAchievements trophy button
+            if (trophyButton != null) {
+                if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
+                    float tx = event.getX(actionIndex);
+                    float ty = event.getY(actionIndex);
+                    if (isInside(trophyButton, tx, ty) && trophyPointerId == -1) {
+                        trophyPointerId = actionId;
+                        trophyPressed = true;
+                        invalidate();
+                    }
+                } else if (action == MotionEvent.ACTION_MOVE && trophyPointerId != -1) {
+                    int pIdx = event.findPointerIndex(trophyPointerId);
+                    if (pIdx != -1 && !isInside(trophyButton, event.getX(pIdx), event.getY(pIdx))) {
+                        trophyPressed = false;
+                        trophyPointerId = -1;
+                        invalidate();
+                    }
+                } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP || action == MotionEvent.ACTION_CANCEL) {
+                    if (actionId == trophyPointerId) {
+                        boolean activate = trophyPressed && action != MotionEvent.ACTION_CANCEL &&
+                                isInside(trophyButton, event.getX(actionIndex), event.getY(actionIndex));
+                        trophyPressed = false;
+                        trophyPointerId = -1;
+                        invalidate();
+                        if (activate) MainActivity.this.showAchievementsDialog();
+                    }
+                }
+            }
+
             // Handle touch down for floating analog
             if (controlsVisible && (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN)) {
-                if (actionId != togglePointerId) {
+                if (actionId != togglePointerId && actionId != trophyPointerId) {
                     float tx = event.getX(actionIndex);
                     float ty = event.getY(actionIndex);
                     // Left half of screen, below the L button, and not over any button
@@ -380,7 +453,7 @@ public class MainActivity extends SDLActivity {
                 }
                 
                 int id = event.getPointerId(i);
-                if (id == togglePointerId) continue;
+                if (id == togglePointerId || id == trophyPointerId) continue;
                 
                 float x = event.getX(i);
                 float y = event.getY(i);
@@ -462,11 +535,13 @@ public class MainActivity extends SDLActivity {
         super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 
+        RetroAchievementsClient.init(this);
+
         if (mLayout != null) {
-            VirtualGamepadView gamepad = new VirtualGamepadView(this);
+            mGamepadView = new VirtualGamepadView(this);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            mLayout.addView(gamepad, params);
+            mLayout.addView(mGamepadView, params);
         }
 
         if (!hasStoragePermission()) {
@@ -482,6 +557,46 @@ public class MainActivity extends SDLActivity {
     public static native boolean nativeSaveState(int slot);
     public static native boolean nativeLoadState(int slot);
     public static native boolean nativeLoadReferenceState(int chapterIndex);
+    public static native void nativeRaConfigure(boolean enabled, String user, String token, String hash);
+    public static native void nativeRaLogin(String user, String password);
+    public static native void nativeRaLogout();
+    public static native void nativeRaPause(boolean paused);
+    public static native String[] nativeRaGetStatus();
+    public static native String[] nativeRaGetAchievements();
+
+    private static void setRaPaused(boolean paused) {
+        try {
+            nativeRaPause(paused);
+        } catch (UnsatisfiedLinkError | Exception e) {
+            Log.w("Zelda3", "Falha ao pausar para o RetroAchievements: " + e.getMessage());
+        }
+    }
+
+    public void showAchievementsDialog() {
+        AchievementsDialog.show(this, true);
+    }
+
+    public void showAchievementUnlocked(final RetroAchievementsClient.Unlock unlock, final Runnable onClosed) {
+        if (isFinishing() || unlock == null) {
+            if (onClosed != null) onClosed.run();
+            return;
+        }
+
+        setRaPaused(true);
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle(R.string.ra_unlocked_title)
+                .setMessage(getString(R.string.ra_unlocked_message, unlock.title,
+                        unlock.description == null ? "" : unlock.description,
+                        unlock.points, unlock.unlocked, unlock.total))
+                .setPositiveButton(android.R.string.ok, null)
+                .setCancelable(false)
+                .create();
+        dialog.setOnDismissListener(d -> {
+            setRaPaused(false);
+            if (onClosed != null) onClosed.run();
+        });
+        dialog.show();
+    }
 
     public static void reloadGameConfig() {
         try {
@@ -551,6 +666,23 @@ public class MainActivity extends SDLActivity {
             ensureAssetsExtracted();
         }
         reloadGameConfig();
+
+        RetroAchievementsClient ra = RetroAchievementsClient.get();
+        if (ra != null) {
+            ra.addListener(raListener);
+            ra.attachActivity(this);
+            ra.refreshFromNative();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        RetroAchievementsClient ra = RetroAchievementsClient.get();
+        if (ra != null) {
+            ra.removeListener(raListener);
+            ra.detachActivity(this);
+        }
+        super.onPause();
     }
 
     @Override
