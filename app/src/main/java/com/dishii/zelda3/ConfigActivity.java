@@ -1318,8 +1318,8 @@ public class ConfigActivity extends Activity {
                 data[0x11] = (byte) (cbCaneByrna.isChecked() ? 1 : 0);
                 // Magic Cape (0x12)
                 data[0x12] = (byte) (cbCape.isChecked() ? 1 : 0);
-                // Magic Mirror (0x13)
-                data[0x13] = (byte) (cbMirror.isChecked() ? 1 : 0);
+                // Magic Mirror (0x13): o valor 2 e o Espelho Mágico (o valor 1 não é reconhecido pelo jogo)
+                data[0x13] = (byte) (cbMirror.isChecked() ? 2 : 0);
                 // Gloves (0x14)
                 data[0x14] = (byte) spGloves.getSelectedItemPosition();
                 // Pegasus Boots (0x15)
